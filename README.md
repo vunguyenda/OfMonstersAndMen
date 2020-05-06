@@ -1,2 +1,1 @@
-# OfMonstersAndMen
-Bootcamp Project #1 - Group 5
+Present Satellite Information
