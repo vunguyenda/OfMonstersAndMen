@@ -1,2 +1,0 @@
-# OfMonstersAndMen
-Bootcamp Project #1 - Group 5
