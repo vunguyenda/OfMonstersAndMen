@@ -1,19 +1,20 @@
 
+//Backup API key for n2yo.com
+// https://www.n2yo.com/rest/v1/satellite/above/41.702/-76.014/0/70/18/&apiKey=589P8Q-SDRYX8-L842ZD-5Z9
 
-https://www.n2yo.com/rest/v1/satellite/above/41.702/-76.014/0/70/18/&apiKey=589P8Q-SDRYX8-L842ZD-5Z9
 
+//blank document.ready function
 $(document).ready(function () {
-
-
 
 })
 
+//Don't worry about this
 // $('body').on("click", ".saveBtn", function (event) {
 // event.preventDefault();
 // })
 
 
-
+//When clicked, get API parse queryURL which contains the API link and API key from n2yo.com to pull sattelite info
 $("#find-me").on("click", function (event) {
     event.preventDefault();
     var queryURL = 
@@ -31,6 +32,7 @@ $("#find-me").on("click", function (event) {
 
 
 //copy pasted from mozzilla geolocation API
+//GET GEO LOCATION ON CLICK
 function geoFindMe() {
 
     const status = document.querySelector('#status');
@@ -62,3 +64,4 @@ function geoFindMe() {
 }
 
 document.querySelector('#find-me').addEventListener('click', geoFindMe);
+//END OF GEO LOCATION ON CLICK
