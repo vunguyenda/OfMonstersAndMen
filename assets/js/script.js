@@ -8,9 +8,21 @@ $(document).ready(function () {
     console.log("test");
     $('select').formSelect();
 
+    
+
     function showPosition(position) {
         $("#lat").text("Latitude: " + position.coords.latitude);
         $("#lon").text("Longitude: " + position.coords.longitude);
+        var apiKey = "630e27fa306f06f51bd9ecbb54aae081";
+        var queryURL = "https://api.openweathermap.org/data/2.5/weather?appid=" + apiKey + "&lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=imperial";
+        // Anitha - Added AJAX request to get current city
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+          }).then(function (response) {
+            $("#current-city").text("City : " + response.name);
+          });
+
       }
     
       $("#current-location").on("click", function() {
