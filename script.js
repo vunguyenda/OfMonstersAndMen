@@ -17,8 +17,10 @@ $(document).ready(function () {
 //When clicked, get API parse queryURL which contains the API link and API key from n2yo.com to pull sattelite info
 $("#find-me").on("click", function (event) {
     event.preventDefault();
+    //queryURL explained: 
+    //after above/lat/long/70 degree/category 1/api key
     var queryURL = 
-    "https://www.n2yo.com/rest/v1/satellite/above/41.702/-76.014/0/70/18/&apiKey=WWZP6Q-SXMAX7-WBLGBK-4EVN";
+    "https://www.n2yo.com/rest/v1/satellite/above/41.702/-76.014/0/70/1/&apiKey=WWZP6Q-SXMAX7-WBLGBK-4EVN";
     $.ajax({
         url: queryURL,
         method: "GET"
@@ -27,6 +29,31 @@ $("#find-me").on("click", function (event) {
     });
   });
 
+//Drop menu to choose: current Geo location OR search by cities
+//if choose current 
+
+//Line 21 after above/is lat and long
+//Need a button to display results when searched by current lat/long
+
+//Need an input form in html to accept lat and long by cities
+//when click searched by cities, display results
+//Need an api to parse lat and long into chosen city
+//add openweather api to seach for city long and lat
+
+//when I input name into the search form, and hit seach
+//Then the form will search the query via openweather api
+//then it will return the long/lat info
+//then it will parse the long/lat into javascript
+//then it will display list of Satellite
+
+//In search form: define category (drop down menu)
+//ISS id=2, 1 , 15 , 52
+
+
+//In search form: define angle
+
+
+//We'll keep both button (current location) and form on html
 
 
 
