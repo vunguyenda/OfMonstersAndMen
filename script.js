@@ -69,6 +69,31 @@ $("#find-me").on("click", function (event) {
     });
   });
 
+
+// TANNER - Added API for Open Weather to get Longitude and Latitude
+var cityName = "Minneapolis";
+
+var apiKey = "630e27fa306f06f51bd9ecbb54aae081";
+var currentURL = "https://api.openweathermap.org/data/2.5/weather?q=";
+var apiIdURL = "&appid="
+var openCurrWeatherAPI = currentURL + cityName + apiIdURL + apiKey;
+
+console.log(openCurrWeatherAPI);
+
+$.ajax({
+url: openCurrWeatherAPI,
+method: "GET"
+}).then(function(response1) {
+
+console.log(response1);
+console.log(response1.coord.lon);
+console.log(response1.coord.lat);
+
+var cityLon = response1.coord.lon;
+var cityLat = response1.coord.lat;
+});
+//End of Open Weather API
+
 //Function to find my current longtitude and latitude
 //copy pasted from mozzilla geolocation API
 //GET GEO LOCATION ON CLICK
