@@ -13,16 +13,59 @@ $(document).ready(function () {
     console.log("city selected is: " + cityName);
     $("#submitBtn").on("click", function (event) {
         event.preventDefault();
+        var cityLon = 0;
+        var cityLat = 0;
+
+        // TANNER - Added API for Open Weather to get Longitude and Latitude
+
         cityName = $("#city").val();
         console.log("button was clicked");
         console.log("city selected is: " + cityName);
         console.log("Selected dropdown is", $("#satellite-category").val());
-        api();
+        category = $("#satellite-category").val();
+
+
+        console.log(cityName);
+        var apiKey = "630e27fa306f06f51bd9ecbb54aae081";
+        var currentURL = "https://api.openweathermap.org/data/2.5/weather?q=";
+        var apiIdURL = "&appid=";
+
+        var openCurrWeatherAPI = currentURL + cityName + apiIdURL + apiKey;
+
+        console.log(openCurrWeatherAPI);
+
+        $.ajax({
+            url: openCurrWeatherAPI,
+            method: "GET"
+        }).then(function (response1) {
+
+            console.log(response1);
+            console.log(response1.coord.lon);
+            console.log(response1.coord.lat);
+
+            cityLon = response1.coord.lon;
+            cityLat = response1.coord.lat;
+            var queryURL =
+                "https://www.n2yo.com/rest/v1/satellite/above/" +
+                cityLat +
+                "/" +
+                cityLon +
+                "/0/70/" +
+                category +
+                "/&apiKey=WWZP6Q-SXMAX7-WBLGBK-4EVN";
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            }).then(function (response) {
+                console.log(response);
+            });
+        });
+        //End of Open Weather API
     });
 });
 
 //this stores the sat category on change to satCat
-$("#satellite-category").on("change", function() {
+$("#satellite-category").on("change", function () {
     console.log($(this).val());
     satCat = $(this).val();
     console.log("satcat is " + satCat);
@@ -74,47 +117,29 @@ $("#satellite-category").on("change", function() {
 
 
 //Function to find sattelite info based on long and lat
-//When clicked, get API parse queryURL which contains the API link and API key from n2yo.com to pull sattelite info
-$("#find-me").on("click", function (event) {
-    event.preventDefault();
-    //queryURL explained: 
-    //after above/lat/long/70 degree/category 1/api key
-    var queryURL =
-        "https://www.n2yo.com/rest/v1/satellite/above/41.702/-76.014/0/70/1/&apiKey=WWZP6Q-SXMAX7-WBLGBK-4EVN";
-    $.ajax({
-        url: queryURL,
-        method: "GET"
-    }).then(function (response) {
-        console.log(response);
-    });
-});
+// //When clicked, get API parse queryURL which contains the API link and API key from n2yo.com to pull sattelite info
+// $("#submitBtn").on("click", function (event) {
+//     event.preventDefault();
+//     //queryURL explained: 
+//     //after above/lat/long/70 degree/category 1/api key
+//     var queryURL =
+//         "https://www.n2yo.com/rest/v1/satellite/above/" +
+//         cityLat +
+//         "/" +
+//         cityLon +
+//         "/0/70/" +
+//         category +
+//         "/&apiKey=WWZP6Q-SXMAX7-WBLGBK-4EVN";
+//     $.ajax({
+//         url: queryURL,
+//         method: "GET"
+//     }).then(function (response) {
+//         console.log(response);
+//     });
+// });
 
 
-// TANNER - Added API for Open Weather to get Longitude and Latitude
 
-
-
-
-var apiKey = "630e27fa306f06f51bd9ecbb54aae081";
-var currentURL = "https://api.openweathermap.org/data/2.5/weather?q=";
-var apiIdURL = "&appid="
-var openCurrWeatherAPI = currentURL + cityName + apiIdURL + apiKey;
-
-console.log(openCurrWeatherAPI);
-
-$.ajax({
-    url: openCurrWeatherAPI,
-    method: "GET"
-}).then(function (response1) {
-
-    console.log(response1);
-    console.log(response1.coord.lon);
-    console.log(response1.coord.lat);
-
-    var cityLon = response1.coord.lon;
-    var cityLat = response1.coord.lat;
-});
-//End of Open Weather API
 
 //Function to find my current longtitude and latitude
 //copy pasted from mozzilla geolocation API
@@ -149,7 +174,7 @@ function geoFindMe() {
 
 }
 
-document.querySelector('#find-me').addEventListener('click', geoFindMe);
+// document.querySelector('#find-me').addEventListener('click', geoFindMe);
 //END OF GEO LOCATION ON CLICK
 
 //Raw notes from last meeting
