@@ -6,6 +6,30 @@
 //blank document.ready function
 $(document).ready(function () {
 
+    //this code is not working
+    //when submit is clicked, page refreshes
+    //console log shows nothing
+    $('select').formSelect();
+
+    var cityName = "";
+    var category = 0;
+    console.log("city selected is: " + cityName);
+    $("#submitBtn").on("click", function (event) {
+        event.preventDefault();
+        cityName = $(this).parent().find("#city").val();
+        console.log("button was clicked");
+        console.log("city selected is: " + cityName);
+
+        //i want to find the option that was selected
+        //and pull its value
+        // category = $(this).parent().find(option?).attr(value);
+
+
+
+        api();
+    });
+
+
 })
 
 //Don't worry about this
@@ -59,19 +83,21 @@ $("#find-me").on("click", function (event) {
     event.preventDefault();
     //queryURL explained: 
     //after above/lat/long/70 degree/category 1/api key
-    var queryURL = 
-    "https://www.n2yo.com/rest/v1/satellite/above/41.702/-76.014/0/70/1/&apiKey=WWZP6Q-SXMAX7-WBLGBK-4EVN";
+    var queryURL =
+        "https://www.n2yo.com/rest/v1/satellite/above/41.702/-76.014/0/70/1/&apiKey=WWZP6Q-SXMAX7-WBLGBK-4EVN";
     $.ajax({
         url: queryURL,
         method: "GET"
     }).then(function (response) {
         console.log(response);
     });
-  });
+});
 
 
 // TANNER - Added API for Open Weather to get Longitude and Latitude
-var cityName = "Minneapolis";
+
+
+
 
 var apiKey = "630e27fa306f06f51bd9ecbb54aae081";
 var currentURL = "https://api.openweathermap.org/data/2.5/weather?q=";
@@ -81,16 +107,16 @@ var openCurrWeatherAPI = currentURL + cityName + apiIdURL + apiKey;
 console.log(openCurrWeatherAPI);
 
 $.ajax({
-url: openCurrWeatherAPI,
-method: "GET"
-}).then(function(response1) {
+    url: openCurrWeatherAPI,
+    method: "GET"
+}).then(function (response1) {
 
-console.log(response1);
-console.log(response1.coord.lon);
-console.log(response1.coord.lat);
+    console.log(response1);
+    console.log(response1.coord.lon);
+    console.log(response1.coord.lat);
 
-var cityLon = response1.coord.lon;
-var cityLat = response1.coord.lat;
+    var cityLon = response1.coord.lon;
+    var cityLat = response1.coord.lat;
 });
 //End of Open Weather API
 
