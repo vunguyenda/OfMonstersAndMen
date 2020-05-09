@@ -1,0 +1,16 @@
+.main {
+    padding: 10px;
+}
+.container-size {
+   margin: 0px; 
+   width: 100%;
+   max-width: 100%;
+}
+.satellite-info .row .form-col {
+    /*border: 1px solid #9e9e9e;*/
+    padding-top: 3px;
+    padding-bottom: 10px;
+}
+.output-col {
+    
+}

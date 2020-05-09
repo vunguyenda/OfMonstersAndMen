@@ -1,66 +1,116 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
+    <!-- Required meta tags -->
     <meta charset="utf-8">
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-<<<<<<< HEAD
-  <!-- Jumbotron to catch attention -->
-  <header class="jumbotron">
-    <h1 class="display-3">Satellite Viewer</h1>
-    <p class="lead">Check your location for Satellites orbitting above you</p>
-    <p id="currentDay" class="lead"></p>
-  </header>
-  <!-- Weeee... Simple button to check Geo location -->
-  <div class="container">
-    <button id="find-me">Show my location</button><br />
-    <p id="status"></p>
-    <a id="map-link" target="_blank"></a>
-  </div>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Dashboard</title>
+    <!-- Materialize CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    </head>
+    <body>  
+        <nav>
+            <div class="nav-wrapper">
+                <a href="#" class="brand-logo center">Satellite Flyover</a>
+            </div>
+        </nav>
 
-  <!-- Javascripts to pull location -->
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-=======
-    
-    <nav>
-        <p>Navigation Bar</p>
-    </nav>
-    
-    <div class="container" id="tbd">
-        
-        <div class="input container">
-            <form class="input form">
-                <p>Input Form</p>
-            </form>
-        </div>
+        <main class="main">
+          <section class="container container-size">
+            <div class="row">
+              <div class="col s12 m3">
+                <button class="waves-effect waves-light btn-large" id="current-location">
+                  <i class="material-icons left">my_location</i>Current Location
+                </button>
+              </div>
+              <div class= "col s12 m3">
+                <p id="lat"></p>
+              </div>
 
-        <section id="priorSearchContainer">
-            <!-- From Local Storage -->
-            <p>List of prior searches</p>
-        </section>
+              <div class= "col s12 m3">
+                <p id="lon"></p>
+              </div>
+            </div>
+           
+            
+          </section>
 
-        
-        <section id="resultsContainer">
-            <p>Output Results</p>
-        </section>
-    </div>
+          <hr />
 
-    <footer id="footer">
-        <p>Footer</p>
-    </footer>
-  
-  
-  <!-- ajax library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <!-- jQuery library -->
-  <script src="https://code.jquery.com/jquery.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
-  <!-- JavaScript File -->
->>>>>>> origin
-  <script src="script.js"></script>
-</body>
+          <div class="container satellite-info container-size">
+            <div class="row">
+              <div class="col s12 m3 form-col ">
+                <form>
+                  <div class="input-field">
+                    <input  id="city" type="text" class="validate">
+                    <label for="city">City</label>
+                  </div>
+                  <div class="input-field">
+                    <select id="satellite-category">
+                      <option value="" disabled selected>Choose Category</option>
+                      <option value="1">Option 1</option>
+                      <option value="2">Option 2</option>
+                      <option value="3">Option 3</option>
+                    </select>
+                    <label for="satellite-category">Satellite Category</label>
+                  </div>
+                  <button class="btn waves-effect waves-light">
+                    Submit
+                    <i class="material-icons right">send</i>
+                  </button>
+                </form>
+              </div>
+              <div class="col m9 output-col container">
+                <div class="row">
+                  <div class="col s12">
+                    <div class="card">
+                      <div class="card-image">
+                        <img src="./assets/images/Satellite1.jpg">
+                        <span class="card-title">Card Title</span>
+                        <a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
+                      </div>
+                      <div class="card-content">
+                        <p>I am a very simple card. I am good at containing small bits of information. I am convenient because I require little markup to use effectively.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-</html>
+        </main>
+
+        <!--
+        <input id="latitude" class="latitude"> <input id="longitude" class="longitude"> 
+
+
+       
+        <a class='dropdown-trigger btn' href='#' data-target='dropdown1'>Choose Category!</a>
+
+        <div class="row">
+            <div class="col s12 m7">
+              <div class="card">
+                <div class="card-image">
+                  <img src="images/sample-1.jpg">
+                  <span class="card-title">Card Title</span>
+                </div>
+                <div class="card-content">
+                  <p>I am a very simple card. I am good at containing small bits of information.
+                  I am convenient because I require little markup to use effectively.</p>
+                </div>
+                <div class="card-action">
+                  <a href="#">This is a link</a>
+                </div>
+              </div>
+            </div>
+          </div>-->
+      
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+      <script src="./assets/js/script.js"></script>
+    </body>
+    </html>
