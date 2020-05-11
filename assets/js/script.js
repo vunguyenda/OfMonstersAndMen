@@ -1,15 +1,18 @@
 //Backup API key for n2yo.com
 // https://www.n2yo.com/rest/v1/satellite/above/41.702/-76.014/0/70/18/&apiKey=589P8Q-SDRYX8-L842ZD-5Z9
 
-console.log("Outside the ready function");
+//picture of ISS from NASA site. free to use https://images.nasa.gov/
+// "NASA should be acknowledged as the source of the material.""
+//pic of ISS
+//https://images-assets.nasa.gov/image/0701891/0701891~orig.jpg
 
-//blank document.ready function
+// pic of progress spacecraft
+// https://images-assets.nasa.gov/image/iss023e030445/iss023e030445~orig.jpg
+
+//endless loop pic in the assets folder is from u/metrolinaszabi on reddit r/astrophotography
+
 $(document).ready(function () {
-    console.log("test");
-    $('select').formSelect();
-
-    
-
+    $('select').formSelect();  
     function showPosition(position) {
         $("#lat").text("Lat: " + position.coords.latitude);
         $("#lon").text("Lon: " + position.coords.longitude);
@@ -22,14 +25,12 @@ $(document).ready(function () {
           }).then(function (response) {
             $("#current-city").text("City : " + response.name);
           });
-
       }
     
       $("#current-location").on("click", function() {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(showPosition);
-        } 
-    
+        }     
       });
 
     var cityName = "";
@@ -39,34 +40,24 @@ $(document).ready(function () {
         event.preventDefault();
         var cityLon = 0;
         var cityLat = 0;
-
         // TANNER - Added API for Open Weather to get Longitude and Latitude
-
         cityName = $("#city").val();
         console.log("button was clicked");
         console.log("city selected is: " + cityName);
         console.log("Selected dropdown is", $("#satellite-category").val());
         category = $("#satellite-category").val();
 
-
         console.log(cityName);
         var apiKey = "630e27fa306f06f51bd9ecbb54aae081";
         var currentURL = "https://api.openweathermap.org/data/2.5/weather?q=";
         var apiIdURL = "&appid=";
-
         var openCurrWeatherAPI = currentURL + cityName + apiIdURL + apiKey;
-
-        console.log(openCurrWeatherAPI);
-
         $.ajax({
             url: openCurrWeatherAPI,
             method: "GET"
         }).then(function (response1) {
-
             console.log(response1);
-            console.log(response1.coord.lon);
-            console.log(response1.coord.lat);
-
+            console.log("lon " + response1.coord.lon + "lat " + response1.coord.lat);
             cityLon = response1.coord.lon;
             cityLat = response1.coord.lat;
             var queryURL =
@@ -94,12 +85,6 @@ $("#satellite-category").on("change", function () {
     satCat = $(this).val();
     console.log("satcat is " + satCat);
 });
-
-//Don't worry about this
-// $('body').on("click", ".saveBtn", function (event) {
-// event.preventDefault();
-// })
-
 
 //When I use the website, I can search for satellite passing by my location
 //When I want to search for satellite, I can choose by my current location or 
@@ -138,32 +123,6 @@ $("#satellite-category").on("change", function () {
 
 
 ///Display of search history
-
-
-//Function to find sattelite info based on long and lat
-// //When clicked, get API parse queryURL which contains the API link and API key from n2yo.com to pull sattelite info
-// $("#submitBtn").on("click", function (event) {
-//     event.preventDefault();
-//     //queryURL explained: 
-//     //after above/lat/long/70 degree/category 1/api key
-//     var queryURL =
-//         "https://www.n2yo.com/rest/v1/satellite/above/" +
-//         cityLat +
-//         "/" +
-//         cityLon +
-//         "/0/70/" +
-//         category +
-//         "/&apiKey=WWZP6Q-SXMAX7-WBLGBK-4EVN";
-//     $.ajax({
-//         url: queryURL,
-//         method: "GET"
-//     }).then(function (response) {
-//         console.log(response);
-//     });
-// });
-
-
-
 
 //Function to find my current longtitude and latitude
 //copy pasted from mozzilla geolocation API
