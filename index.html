@@ -30,7 +30,9 @@
                 <div class="container container-size">
                   <div class="row mb-0">
                     <div class="col s12">
-                      <p class ="mb-0" id="current-city"></p>
+                      <p class ="mb-0" id="current-city">
+                        <!--<i class="material-icons">add_location</i>-->
+                      </p>
                     </div>
                   </div>
                   <div class="row mb-0">
@@ -57,45 +59,45 @@
                   </div>
                   <div class="input-field">
                     <select id="satellite-category">
-                      <option value="" disabled selected>Choose Category</option>
-                      <option value="1">brighest</option>
+                      <option value="" selected>Choose Category</option>
+                      <option value="1">Brighest</option>
                       <option value="2">ISS</option>
                     </select>
                     <label for="satellite-category">Satellite Category</label>
                   </div>
-                  <button class="btn waves-effect waves-light">
+                  <button id="submitBtn" class="btn waves-effect waves-light">
                     Submit
                     <i class="material-icons right">send</i>
-                  </button>
-                  
+                  </button> 
                 </form>
                 <div class ="searchHistory">
-                  <p>Search history</p>
-                  <p>Satellite Name:</p>
-                  <P>Lat:</p>
-                  <p>Lon:</p>
+                  <p>City Name :</p>
+                  <p>Satellite Name :</p>
+                  <P>Lat :</p>
+                  <p>Lon :</p>
                 </div>
               </div>
               <!-- Anitha: Added card section -->
+
               <div class="col m9 output-col container">
                 <div class="row">
                   <div class="col s12">
-                    <div class="card">
+                    <div class="card horizontal">
                       <div class="card-image">
-                        <img src="./assets/images/Satellite1.jpg">
-                        <span class="card-title">Card Title</span>
-                        <a class="btn-floating halfway-fab waves-effect waves-light red"><i class="material-icons">add</i></a>
+                       <img src="./assets/images/Satellite1.jpg">
                       </div>
-                      <div class="card-content">
-                        <p>I am a very simple card. I am good at containing small bits of information. I am convenient because I require little markup to use effectively.</p>
-                      </div>
-                    </div>
+                      <div class="card-stacked">
+                       <div class="card-content">
+                         <p>I am a very simple card. I am good at containing small bits of information.</p>
+                       </div>
+                       <div class="card-action">
+                        <a href="#">This is a link</a>
+                       </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
         </main>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>

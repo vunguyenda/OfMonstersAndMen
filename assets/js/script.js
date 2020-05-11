@@ -11,8 +11,8 @@ $(document).ready(function () {
     
 
     function showPosition(position) {
-        $("#lat").text("Latitude: " + position.coords.latitude);
-        $("#lon").text("Longitude: " + position.coords.longitude);
+        $("#lat").text("Lat: " + position.coords.latitude);
+        $("#lon").text("Lon: " + position.coords.longitude);
         var apiKey = "630e27fa306f06f51bd9ecbb54aae081";
         var queryURL = "https://api.openweathermap.org/data/2.5/weather?appid=" + apiKey + "&lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=imperial";
         // Anitha - Added AJAX request to get current city
