@@ -1,4 +1,3 @@
-
 //Backup API key for n2yo.com
 // https://www.n2yo.com/rest/v1/satellite/above/41.702/-76.014/0/70/18/&apiKey=589P8Q-SDRYX8-L842ZD-5Z9
 
@@ -8,6 +7,31 @@ console.log("Outside the ready function");
 $(document).ready(function () {
     console.log("test");
     $('select').formSelect();
+
+    
+
+    function showPosition(position) {
+        $("#lat").text("Lat: " + position.coords.latitude);
+        $("#lon").text("Lon: " + position.coords.longitude);
+        var apiKey = "630e27fa306f06f51bd9ecbb54aae081";
+        var queryURL = "https://api.openweathermap.org/data/2.5/weather?appid=" + apiKey + "&lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=imperial";
+        // Anitha - Added AJAX request to get current city
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+          }).then(function (response) {
+            $("#current-city").text("City : " + response.name);
+          });
+
+      }
+    
+      $("#current-location").on("click", function() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(showPosition);
+        } 
+    
+      });
+
     var cityName = "";
     var category = 0;
     console.log("city selected is: " + cityName);
