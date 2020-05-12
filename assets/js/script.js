@@ -12,7 +12,7 @@
 //endless loop pic in the assets folder is from u/metrolinaszabi on reddit r/astrophotography
 
 $(document).ready(function () {
-    $('select').formSelect();  
+    $('select').formSelect();
     function showPosition(position) {
         $("#lat").text("Lat: " + position.coords.latitude);
         $("#lon").text("Lon: " + position.coords.longitude);
@@ -22,22 +22,27 @@ $(document).ready(function () {
         $.ajax({
             url: queryURL,
             method: "GET"
-          }).then(function (response) {
+        }).then(function (response) {
             $("#current-city").text("City : " + response.name);
-          });
-      }
-    
-      $("#current-location").on("click", function() {
+        });
+    }
+
+    $("#current-location").on("click", function () {
         if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(showPosition);
-        }     
-      });
+            navigator.geolocation.getCurrentPosition(showPosition);
+        }
+    });
 
     var cityName = "";
     var category = 0;
     console.log("city selected is: " + cityName);
     $("#submitBtn").on("click", function (event) {
         event.preventDefault();
+
+        //this empties the sat list and says calculating while waiting for API to repond
+        $("#satList ul li").empty();
+        $("#satList ul li").text("Calculating...");
+
         var cityLon = 0;
         var cityLat = 0;
         // TANNER - Added API for Open Weather to get Longitude and Latitude
@@ -57,9 +62,10 @@ $(document).ready(function () {
             method: "GET"
         }).then(function (response1) {
             console.log(response1);
-            console.log("lon " + response1.coord.lon + "lat " + response1.coord.lat);
+            console.log("lat " + response1.coord.lat + "lon " + response1.coord.lon);
             cityLon = response1.coord.lon;
             cityLat = response1.coord.lat;
+            //End of Open Weather API
             var queryURL =
                 "https://www.n2yo.com/rest/v1/satellite/above/" +
                 cityLat +
@@ -72,10 +78,53 @@ $(document).ready(function () {
                 url: queryURL,
                 method: "GET"
             }).then(function (response) {
+                console.log("response");
                 console.log(response);
+                console.log("response.above");
+                console.log(response.above);
+                console.log("satname 0 is " + response.above[0].satname);
+                console.log("for loop starting");
+                for (var i = 0; i < response.above.length; i++) {
+                    console.log("i is " + i + " " + response.above[i].satname);
+                }
+                //this might work? currently only displays 1 sat when it should be more
+                //trying to populate list with sat names
+                // $( "ul li" ).text(function( index ) {
+                //     return "item number " + ( index + 1 );
+                //   });
+                //above code is the example from https://api.jquery.com/text/#text-function
+                $("#satList ul li").empty();
+                $("#satList ul li").text(function (index) {
+                    return "Sat" + (index + 1) + ": " + response.above[index].satname;
+                });
+                //Currently untested, idea being that if response above is empty, error is displayed
+                if (!response.above) {
+                    console.log("no sats found");
+                    $("#satList ul li").text("No sats found");
+                }
+
+
+                //TODO add weather viewing conditions 
+                console.log("sunset" + response1.sys.sunset);
+                console.log("sunrise" + response1.sys.sunrise);
+                //TODO code that calcs if the current city in any part of the world is at night time
+                // https://openweathermap.org/current
+                $("#nightTime").text("#nightTime");
+                console.log("conditions" + response1.weather[0].description);
+                $("#Conditions").text(response1.weather[0].description);
+
+
+                //populate card with info from FIRST array from api response. 
+                //TODO if sat list is clicked to another sat, overwrite the card
+                //ONLY what is below is what will change if different Sat is clicked. 
+                // TODO create onclick event that works on the dynamically generated list of Sats
+                $("#SatName").text(response.above[0].satname);
+                $("#Category").text(category);
+                $("#Direction").text("#Direction");
+                $("#Elevation").text("#Elevation");
             });
         });
-        //End of Open Weather API
+
     });
 });
 
