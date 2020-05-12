@@ -11,6 +11,9 @@
 
 //endless loop pic in the assets folder is from u/metrolinaszabi on reddit r/astrophotography
 
+// response1 is the openweather response
+// response is the n2y0 ABOUT response
+
 $(document).ready(function () {
     $('select').formSelect();
     function showPosition(position) {
@@ -47,6 +50,9 @@ $(document).ready(function () {
         var cityLat = 0;
         // TANNER - Added API for Open Weather to get Longitude and Latitude
         cityName = $("#city").val();
+        //TODO tim tanner, make this a prepending list, with a max of 5? 10?
+        $("#cityNameSpan").text(cityName);
+
         console.log("button was clicked");
         console.log("city selected is: " + cityName);
         console.log("Selected dropdown is", $("#satellite-category").val());
@@ -63,8 +69,8 @@ $(document).ready(function () {
         }).then(function (response1) {
             console.log(response1);
             console.log("lat " + response1.coord.lat + "lon " + response1.coord.lon);
-            cityLon = response1.coord.lon;
             cityLat = response1.coord.lat;
+            cityLon = response1.coord.lon;
             //End of Open Weather API
             var queryURL =
                 "https://www.n2yo.com/rest/v1/satellite/above/" +
@@ -80,48 +86,67 @@ $(document).ready(function () {
             }).then(function (response) {
                 console.log("response");
                 console.log(response);
-                console.log("response.above");
-                console.log(response.above);
-                console.log("satname 0 is " + response.above[0].satname);
-                console.log("for loop starting");
-                for (var i = 0; i < response.above.length; i++) {
-                    console.log("i is " + i + " " + response.above[i].satname);
-                }
-                //this might work? currently only displays 1 sat when it should be more
-                //trying to populate list with sat names
-                // $( "ul li" ).text(function( index ) {
-                //     return "item number " + ( index + 1 );
-                //   });
-                //above code is the example from https://api.jquery.com/text/#text-function
-                $("#satList ul li").empty();
-                $("#satList ul li").text(function (index) {
-                    return "Sat" + (index + 1) + ": " + response.above[index].satname;
-                });
                 //Currently untested, idea being that if response above is empty, error is displayed
                 if (!response.above) {
                     console.log("no sats found");
                     $("#satList ul li").text("No sats found");
+                } else {
+                    console.log("response.above");
+
+                    console.log(response.above);
+                    console.log("satname 0 is " + response.above[0].satname);
+                    console.log("for loop starting");
+                    //emptying the sat list before populating it
+                    $("#satList ul").empty();
+                    //this loop populates the list of sats above location
+                    for (var i = 0; i < response.above.length; i++) {
+                        console.log("i is " + i + " " + response.above[i].satname);
+                        $("#satList ul").append("<li class='satListClass' value = '" + i + "'>"
+                            + response.above[i].satname + "</li>");
+                    }
+
+                    // abandoning code below, cant get it to work
+
+                    // //this might work? currently only displays 1 sat when it should be more
+                    // //trying to populate list with sat names
+                    // // $( "ul li" ).text(function( index ) {
+                    // //     return "item number " + ( index + 1 );
+                    // //   });
+                    // //above code is the example from https://api.jquery.com/text/#text-function
+                    // $("#satList ul li").empty();
+                    // $("#satList ul li").text(function (index) {
+                    //     return "Sat" + (index + 1) + ": " + response.above[index].satname;
+                    // });
+                    //----------
+
+                    //Populating data that will not change regardless of sat clicked
+                    //TODO add weather viewing conditions 
+                    console.log("sunset" + response1.sys.sunset);
+                    console.log("sunrise" + response1.sys.sunrise);
+                    //TODO code that calcs if the current city in any part of the world is at night time
+                    // https://openweathermap.org/current
+                    $("#nightTime").text("#nightTime");
+                    console.log("conditions" + response1.weather[0].description);
+                    $("#Conditions").text(response1.weather[0].description);
+                    $("#Category").text(category);
+
+                    //populating card with the first sat retrieved
+                    //ONLY what is below is what will change if different Sat is clicked. 
+                    $("#SatName").text(response.above[0].satname);
+
+                    //TODO retrieve NORAD sat id, use the other api to display viewing direction and elevation
+
+                    $("#Direction").text("#Direction");
+                    $("#Elevation").text("#Elevation");
+
+                    $("body").on("click", "#satList ul .satListClass", function () {
+                        var clickedIndex = $(this).attr("value");
+                        console.log("sat clicked index of " + clickedIndex);
+                        $("#SatName").text(response.above[clickedIndex].satname);
+                        $("#Direction").text("#Direction");
+                        $("#Elevation").text("#Elevation");
+                    });
                 }
-
-
-                //TODO add weather viewing conditions 
-                console.log("sunset" + response1.sys.sunset);
-                console.log("sunrise" + response1.sys.sunrise);
-                //TODO code that calcs if the current city in any part of the world is at night time
-                // https://openweathermap.org/current
-                $("#nightTime").text("#nightTime");
-                console.log("conditions" + response1.weather[0].description);
-                $("#Conditions").text(response1.weather[0].description);
-
-
-                //populate card with info from FIRST array from api response. 
-                //TODO if sat list is clicked to another sat, overwrite the card
-                //ONLY what is below is what will change if different Sat is clicked. 
-                // TODO create onclick event that works on the dynamically generated list of Sats
-                $("#SatName").text(response.above[0].satname);
-                $("#Category").text(category);
-                $("#Direction").text("#Direction");
-                $("#Elevation").text("#Elevation");
             });
         });
 
@@ -134,6 +159,8 @@ $("#satellite-category").on("change", function () {
     satCat = $(this).val();
     console.log("satcat is " + satCat);
 });
+
+
 
 //When I use the website, I can search for satellite passing by my location
 //When I want to search for satellite, I can choose by my current location or 
