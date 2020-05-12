@@ -43,8 +43,8 @@ $(document).ready(function () {
         event.preventDefault();
 
         //this empties the sat list and says calculating while waiting for API to repond
-        $("#satList ul li").empty();
-        $("#satList ul li").text("Calculating...");
+        $("#satList ul").empty();
+        $("#satList ul").append("<li>Calculating...</li>");
 
         var cityLon = 0;
         var cityLat = 0;
