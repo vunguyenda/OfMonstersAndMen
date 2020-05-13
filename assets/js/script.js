@@ -14,7 +14,12 @@
 // response1 is the openweather response
 // response is the n2y0 ABOUT response
 
+var cityLat = 0;
+var cityLon = 0;
+
+
 $(document).ready(function () {
+
   // flag to turn off or on Console.log
   let test = true;
 
@@ -30,6 +35,34 @@ $(document).ready(function () {
       method: "GET"
     }).then(function (response) {
       $("#current-city").text("City : " + response.name);
+
+    $('select').formSelect();
+    function showPosition(position) {
+        $("#lat").text("Lat: " + position.coords.latitude);
+        $("#lon").text("Lon: " + position.coords.longitude);
+
+        cityLat = position.coords.latitude;
+        cityLon = position.coords.longitude;
+
+        console.log("geo location lat is " + cityLat);
+
+        var apiKey = "630e27fa306f06f51bd9ecbb54aae081";
+        var queryURL = "https://api.openweathermap.org/data/2.5/weather?appid=" + apiKey + "&lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=imperial";
+        // Anitha - Added AJAX request to get current city
+        $.ajax({
+            url: queryURL,
+            method: "GET"
+        }).then(function (response) {
+            $("#current-city").text("City : " + response.name);
+            $("#city").val(response.name);
+        });
+    }
+
+    $("#current-location").on("click", function () {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(showPosition);
+        }
+
     });
   }
 
@@ -58,6 +91,7 @@ $(document).ready(function () {
 
     console.log("button was clicked");
     console.log("city selected is: " + cityName);
+
     console.log("Selected dropdown is", $("#satellite-category").val());
     category = $("#satellite-category").val();
 
@@ -151,6 +185,124 @@ $(document).ready(function () {
           });
         }
       });
+
+    $("#submitBtn").on("click", function (event) {
+        event.preventDefault();
+
+        //this empties the sat list and says calculating while waiting for API to repond
+        $("#satList ul").empty();
+        $("#satList ul").append("<li>Calculating...</li>");
+
+        // TANNER - Added API for Open Weather to get Longitude and Latitude
+        cityName = $("#city").val();
+        //TODO tim tanner, make this a prepending list, with a max of 5? 10?
+        $("#cityNameSpan").text(cityName);
+
+        console.log("button was clicked");
+        console.log("city selected is: " + cityName);
+        console.log("Selected dropdown is", $("#satellite-category").val());
+        category = $("#satellite-category").val();
+
+        console.log(cityName);
+        var apiKey = "630e27fa306f06f51bd9ecbb54aae081";
+        var currentURL = "https://api.openweathermap.org/data/2.5/weather?q=";
+        var apiIdURL = "&appid=";
+        var openCurrWeatherAPI = currentURL + cityName + apiIdURL + apiKey;
+        $.ajax({
+            url: openCurrWeatherAPI,
+            method: "GET"
+        }).then(function (response1) {
+            console.log(response1);
+            console.log("lat " + response1.coord.lat + "lon " + response1.coord.lon);
+
+            if (cityLat != 0 || cityLon != 0) {
+                console.log("first if");
+            } else {
+                cityLat = response1.coord.lat;
+                cityLon = response1.coord.lon;
+                console.log("if else");
+            }
+
+            //End of Open Weather API
+            var queryURL =
+                "https://www.n2yo.com/rest/v1/satellite/above/" +
+                cityLat +
+                "/" +
+                cityLon +
+                "/0/70/" +
+                category +
+                "/&apiKey=WWZP6Q-SXMAX7-WBLGBK-4EVN";
+            $.ajax({
+                url: queryURL,
+                method: "GET"
+            }).then(function (response) {
+                console.log("response");
+                console.log(response);
+                //Currently untested, idea being that if response above is empty, error is displayed
+                if (!response.above) {
+                    console.log("no sats found");
+                    $("#satList ul li").text("No sats found");
+                } else {
+                    console.log("response.above");
+
+                    console.log(response.above);
+                    console.log("satname 0 is " + response.above[0].satname);
+                    console.log("for loop starting");
+                    //emptying the sat list before populating it
+                    $("#satList ul").empty();
+                    //this loop populates the list of sats above location
+                    for (var i = 0; i < response.above.length; i++) {
+                        console.log("i is " + i + " " + response.above[i].satname);
+                        $("#satList ul").append("<li class='satListClass' value = '" + i + "'>"
+                            + response.above[i].satname + "</li>");
+                    }
+
+                    // abandoning code below, cant get it to work
+
+                    // //this might work? currently only displays 1 sat when it should be more
+                    // //trying to populate list with sat names
+                    // // $( "ul li" ).text(function( index ) {
+                    // //     return "item number " + ( index + 1 );
+                    // //   });
+                    // //above code is the example from https://api.jquery.com/text/#text-function
+                    // $("#satList ul li").empty();
+                    // $("#satList ul li").text(function (index) {
+                    //     return "Sat" + (index + 1) + ": " + response.above[index].satname;
+                    // });
+                    //----------
+
+                    //Populating data that will not change regardless of sat clicked
+                    //TODO add weather viewing conditions 
+                    console.log("sunset" + response1.sys.sunset);
+                    console.log("sunrise" + response1.sys.sunrise);
+                    //TODO code that calcs if the current city in any part of the world is at night time
+                    // https://openweathermap.org/current
+                    $("#nightTime").text("#nightTime");
+                    console.log("conditions" + response1.weather[0].description);
+                    $("#Conditions").text(response1.weather[0].description);
+                    $("#Category").text(category);
+
+                    //populating card with the first sat retrieved
+                    //ONLY what is below is what will change if different Sat is clicked. 
+                    $("#SatName").text(response.above[0].satname);
+
+                    //TODO retrieve NORAD sat id, use the other api to display viewing direction and elevation
+
+                    $("#Direction").text("#Direction");
+                    $("#Elevation").text("#Elevation");
+
+                    $("body").on("click", "#satList ul .satListClass", function () {
+                        var clickedIndex = $(this).attr("value");
+                        console.log("sat clicked index of " + clickedIndex);
+                        $("#SatName").text(response.above[clickedIndex].satname);
+                        $("#Direction").text("#Direction");
+                        $("#Elevation").text("#Elevation");
+                    });
+                }
+            });
+        });
+
+
     });
 
   });
@@ -206,7 +358,8 @@ $("#satellite-category").on("change", function () {
 //Function to find my current longtitude and latitude
 //copy pasted from mozzilla geolocation API
 //GET GEO LOCATION ON CLICK
-function geoFindMe() {
+// function geoFindMe() {
+
 
   const status = document.querySelector('#status');
   const mapLink = document.querySelector('#map-link');
@@ -234,7 +387,35 @@ function geoFindMe() {
     navigator.geolocation.getCurrentPosition(success, error);
   }
 
-}
+//     const status = document.querySelector('#status');
+//     const mapLink = document.querySelector('#map-link');
+
+//     mapLink.href = '';
+//     mapLink.textContent = '';
+
+//     function success(position) {
+//         const latitude = position.coords.latitude;
+//         const longitude = position.coords.longitude;
+//         console.log("geolocator latitude is " + position.coords.latitude);
+
+//         status.textContent = '';
+//         mapLink.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
+//         mapLink.textContent = `Latitude: ${latitude} °, Longitude: ${longitude} °`;
+//     }
+
+//     function error() {
+//         status.textContent = 'Unable to retrieve your location';
+//     }
+
+//     if (!navigator.geolocation) {
+//         status.textContent = 'Geolocation is not supported by your browser';
+//     } else {
+//         status.textContent = 'Locating…';
+//         navigator.geolocation.getCurrentPosition(success, error);
+//     }
+
+
+// }
 
 // document.querySelector('#find-me').addEventListener('click', geoFindMe);
 //END OF GEO LOCATION ON CLICK
