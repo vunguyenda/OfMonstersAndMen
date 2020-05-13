@@ -19,6 +19,23 @@ var cityLon = 0;
 
 
 $(document).ready(function () {
+
+  // flag to turn off or on Console.log
+  let test = true;
+
+  $('select').formSelect();
+  function showPosition(position) {
+    $("#lat").text("Lat: " + position.coords.latitude);
+    $("#lon").text("Lon: " + position.coords.longitude);
+    var apiKey = "630e27fa306f06f51bd9ecbb54aae081";
+    var queryURL = "https://api.openweathermap.org/data/2.5/weather?appid=" + apiKey + "&lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=imperial";
+    // Anitha - Added AJAX request to get current city
+    $.ajax({
+      url: queryURL,
+      method: "GET"
+    }).then(function (response) {
+      $("#current-city").text("City : " + response.name);
+
     $('select').formSelect();
     function showPosition(position) {
         $("#lat").text("Lat: " + position.coords.latitude);
@@ -45,11 +62,130 @@ $(document).ready(function () {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition);
         }
-    });
 
-    var cityName = "";
-    var category = 0;
+    });
+  }
+
+  $("#current-location").on("click", function () {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition);
+    }
+  });
+
+  var cityName = "";
+  var category = 0;
+  console.log("city selected is: " + cityName);
+  $("#submitBtn").on("click", function (event) {
+    event.preventDefault();
+
+    //this empties the sat list and says calculating while waiting for API to repond
+    $("#satList ul").empty();
+    $("#satList ul").append("<li>Calculating...</li>");
+
+    var cityLon = 0;
+    var cityLat = 0;
+    // Added API for Open Weather to get Longitude and Latitude
+    cityName = $("#city").val();
+    //TODO tim tanner, make this a prepending list, with a max of 5? 10?
+    $("#cityNameSpan").text(cityName);
+
+    console.log("button was clicked");
     console.log("city selected is: " + cityName);
+
+    console.log("Selected dropdown is", $("#satellite-category").val());
+    category = $("#satellite-category").val();
+
+    console.log(cityName);
+    var apiKey = "630e27fa306f06f51bd9ecbb54aae081";
+    var currentURL = "https://api.openweathermap.org/data/2.5/weather?q=";
+    var apiIdURL = "&appid=";
+    var openCurrWeatherAPI = currentURL + cityName + apiIdURL + apiKey;
+    $.ajax({
+      url: openCurrWeatherAPI,
+      method: "GET"
+    }).then(function (response1) {
+      console.log(response1);
+      console.log("lat " + response1.coord.lat + "lon " + response1.coord.lon);
+      cityLat = response1.coord.lat;
+      cityLon = response1.coord.lon;
+      //End of Open Weather API
+      var queryURL =
+        "https://www.n2yo.com/rest/v1/satellite/above/" +
+        cityLat +
+        "/" +
+        cityLon +
+        "/0/70/" +
+        category +
+        "/&apiKey=WWZP6Q-SXMAX7-WBLGBK-4EVN";
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      }).then(function (response) {
+        console.log("response");
+        console.log(response);
+        //Currently untested, idea being that if response above is empty, error is displayed
+        if (!response.above) {
+          console.log("no sats found");
+          $("#satList ul li").text("No sats found");
+        } else {
+          console.log("response.above");
+
+          console.log(response.above);
+          console.log("satname 0 is " + response.above[0].satname);
+          console.log("for loop starting");
+          //emptying the sat list before populating it
+          $("#satList ul").empty();
+          //this loop populates the list of sats above location
+          for (var i = 0; i < response.above.length; i++) {
+            console.log("i is " + i + " " + response.above[i].satname);
+            $("#satList ul").append("<li class='satListClass' value = '" + i + "'>"
+              + response.above[i].satname + "</li>");
+          }
+
+          // abandoning code below, cant get it to work
+
+          // //this might work? currently only displays 1 sat when it should be more
+          // //trying to populate list with sat names
+          // // $( "ul li" ).text(function( index ) {
+          // //     return "item number " + ( index + 1 );
+          // //   });
+          // //above code is the example from https://api.jquery.com/text/#text-function
+          // $("#satList ul li").empty();
+          // $("#satList ul li").text(function (index) {
+          //     return "Sat" + (index + 1) + ": " + response.above[index].satname;
+          // });
+          //----------
+
+          //Populating data that will not change regardless of sat clicked
+          //TODO add weather viewing conditions 
+          console.log("sunset" + response1.sys.sunset);
+          console.log("sunrise" + response1.sys.sunrise);
+          //TODO code that calcs if the current city in any part of the world is at night time
+          // https://openweathermap.org/current
+          $("#nightTime").text("#nightTime");
+          console.log("conditions" + response1.weather[0].description);
+          $("#Conditions").text(response1.weather[0].description);
+          $("#Category").text(category);
+
+          //populating card with the first sat retrieved
+          //ONLY what is below is what will change if different Sat is clicked. 
+          $("#SatName").text(response.above[0].satname);
+
+          //TODO retrieve NORAD sat id, use the other api to display viewing direction and elevation
+
+          $("#Direction").text("#Direction");
+          $("#Elevation").text("#Elevation");
+
+          $("body").on("click", "#satList ul .satListClass", function () {
+            var clickedIndex = $(this).attr("value");
+            console.log("sat clicked index of " + clickedIndex);
+            $("#SatName").text(response.above[clickedIndex].satname);
+            $("#Direction").text("#Direction");
+            $("#Elevation").text("#Elevation");
+          });
+        }
+      });
+
     $("#submitBtn").on("click", function (event) {
         event.preventDefault();
 
@@ -166,14 +302,17 @@ $(document).ready(function () {
             });
         });
 
+
     });
+
+  });
 });
 
 //this stores the sat category on change to satCat
 $("#satellite-category").on("change", function () {
-    console.log($(this).val());
-    satCat = $(this).val();
-    console.log("satcat is " + satCat);
+  console.log($(this).val());
+  satCat = $(this).val();
+  console.log("satcat is " + satCat);
 });
 
 
@@ -221,6 +360,33 @@ $("#satellite-category").on("change", function () {
 //GET GEO LOCATION ON CLICK
 // function geoFindMe() {
 
+
+  const status = document.querySelector('#status');
+  const mapLink = document.querySelector('#map-link');
+
+  mapLink.href = '';
+  mapLink.textContent = '';
+
+  function success(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+
+    status.textContent = '';
+    mapLink.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
+    mapLink.textContent = `Latitude: ${latitude} °, Longitude: ${longitude} °`;
+  }
+
+  function error() {
+    status.textContent = 'Unable to retrieve your location';
+  }
+
+  if (!navigator.geolocation) {
+    status.textContent = 'Geolocation is not supported by your browser';
+  } else {
+    status.textContent = 'Locating…';
+    navigator.geolocation.getCurrentPosition(success, error);
+  }
+
 //     const status = document.querySelector('#status');
 //     const mapLink = document.querySelector('#map-link');
 
@@ -247,6 +413,7 @@ $("#satellite-category").on("change", function () {
 //         status.textContent = 'Locating…';
 //         navigator.geolocation.getCurrentPosition(success, error);
 //     }
+
 
 // }
 
@@ -280,3 +447,95 @@ $("#satellite-category").on("change", function () {
 
 
 //We'll keep both button (current location) and form on html
+// Collect requested location
+$('#submitBtn,#past-cities').on('click', function () {
+  // get location from user input box
+  let e = $(event.target)[0];
+  let location = "";
+  if (e.id === "getSatellites") {
+    location = $('#city-search').val().trim().toUpperCase();
+  }
+  else if (e.className === ("cityList")) {
+    location = e.innerText;
+  }
+  if (location == "") return;
+  updateCityStore(location);
+  // Add Previouis CODE
+  getCurSatellites(location);
+});
+
+function getCurLocation() {
+  // Set location current location to null
+  let location = {};
+
+  // if successful Navigator, load location
+  function success(position) {
+    // Get
+    location = {
+      latitude: position.coords.latitude,
+      longitude: position.coords.longitude,
+      success: true
+    }
+    if (test) { console.log(" success location", location); }
+    getCurSatellites(location);
+  }
+
+  // if unsuccessful Navigator function, load error
+  function error() {
+    location = { success: false }
+    console.log('Could not get location');
+    return location;
+  }
+
+  // Use HTML Geolocation to get longitude and latitude
+  if (!navigator.geolocation) {
+    console.log('Geolocation is not supported by your browser');
+  } else {
+    navigator.geolocation.getCurrentPosition(success, error);
+  }
+};
+
+function getCurSatellites(loc) {
+  // STUB, reder History should load in GetCurSatellites call
+  renderHistory();
+  // clear search field
+  $('#city-search').val("");
+  if (typeof loc === "object") {
+    city = `lat=${loc.latitude}&lon=${loc.longitude}`;
+  } else {
+    city = `q=${loc}`;
+  }
+};
+
+function updateCityStore(city) {
+  // Update local storage with searched City's
+  let cityList = JSON.parse(localStorage.getItem("cityList")) || [];
+  cityList.push(city);
+  // sort into alphabetical order
+  cityList.sort();
+  // removes dulicate cities
+  for (let i = 1; i < cityList.length; i++) {
+    if (cityList[i] === cityList[i - 1]) cityList.splice(i, 1);
+  }
+
+  //stores in local storage
+  localStorage.setItem('cityList', JSON.stringify(cityList));
+};
+
+function renderHistory() {
+  // function to pull city history from local memory
+  let cityList = JSON.parse(localStorage.getItem("cityList")) || [];
+
+  $('#past-cities').empty();
+  cityList.forEach(function (city) {
+    let cityNameDiv = $('<div>');
+    cityNameDiv.addClass("cityList");
+    cityNameDiv.attr("value", city);
+    cityNameDiv.text(city);
+    $('#past-cities').prepend(cityNameDiv);
+  });
+};
+
+// will get location when page initializes
+// const location = getCurLocation();
+// });
