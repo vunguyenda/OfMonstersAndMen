@@ -17,20 +17,3 @@
 .mb-0 {
     margin-bottom: 0;
 }
-.search-section {
-    height: 100%;
-  }
-  .cityList {
-    border: solid;
-    border-width: thin;
-    margin: 5px;
-    padding-left: 2px;
-    background-color: lightgrey;
-  }
-  .cityList:hover {
-    background-color: #28a745;
-    color: #fff;
-  }
-  .container {
-    margin-top: 5px;
-  }
