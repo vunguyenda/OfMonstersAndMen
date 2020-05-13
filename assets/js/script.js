@@ -14,11 +14,21 @@
 // response1 is the openweather response
 // response is the n2y0 ABOUT response
 
+var cityLat = 0;
+var cityLon = 0;
+
+
 $(document).ready(function () {
     $('select').formSelect();
     function showPosition(position) {
         $("#lat").text("Lat: " + position.coords.latitude);
         $("#lon").text("Lon: " + position.coords.longitude);
+
+        cityLat = position.coords.latitude;
+        cityLon = position.coords.longitude;
+
+        console.log("geo location lat is " + cityLat);
+
         var apiKey = "630e27fa306f06f51bd9ecbb54aae081";
         var queryURL = "https://api.openweathermap.org/data/2.5/weather?appid=" + apiKey + "&lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=imperial";
         // Anitha - Added AJAX request to get current city
@@ -27,6 +37,7 @@ $(document).ready(function () {
             method: "GET"
         }).then(function (response) {
             $("#current-city").text("City : " + response.name);
+            $("#city").val(response.name);
         });
     }
 
@@ -46,8 +57,6 @@ $(document).ready(function () {
         $("#satList ul").empty();
         $("#satList ul").append("<li>Calculating...</li>");
 
-        var cityLon = 0;
-        var cityLat = 0;
         // TANNER - Added API for Open Weather to get Longitude and Latitude
         cityName = $("#city").val();
         //TODO tim tanner, make this a prepending list, with a max of 5? 10?
@@ -69,8 +78,15 @@ $(document).ready(function () {
         }).then(function (response1) {
             console.log(response1);
             console.log("lat " + response1.coord.lat + "lon " + response1.coord.lon);
-            cityLat = response1.coord.lat;
-            cityLon = response1.coord.lon;
+
+            if (cityLat != 0 || cityLon != 0) {
+                console.log("first if");
+            } else {
+                cityLat = response1.coord.lat;
+                cityLon = response1.coord.lon;
+                console.log("if else");
+            }
+
             //End of Open Weather API
             var queryURL =
                 "https://www.n2yo.com/rest/v1/satellite/above/" +
@@ -203,35 +219,36 @@ $("#satellite-category").on("change", function () {
 //Function to find my current longtitude and latitude
 //copy pasted from mozzilla geolocation API
 //GET GEO LOCATION ON CLICK
-function geoFindMe() {
+// function geoFindMe() {
 
-    const status = document.querySelector('#status');
-    const mapLink = document.querySelector('#map-link');
+//     const status = document.querySelector('#status');
+//     const mapLink = document.querySelector('#map-link');
 
-    mapLink.href = '';
-    mapLink.textContent = '';
+//     mapLink.href = '';
+//     mapLink.textContent = '';
 
-    function success(position) {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
+//     function success(position) {
+//         const latitude = position.coords.latitude;
+//         const longitude = position.coords.longitude;
+//         console.log("geolocator latitude is " + position.coords.latitude);
 
-        status.textContent = '';
-        mapLink.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
-        mapLink.textContent = `Latitude: ${latitude} °, Longitude: ${longitude} °`;
-    }
+//         status.textContent = '';
+//         mapLink.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
+//         mapLink.textContent = `Latitude: ${latitude} °, Longitude: ${longitude} °`;
+//     }
 
-    function error() {
-        status.textContent = 'Unable to retrieve your location';
-    }
+//     function error() {
+//         status.textContent = 'Unable to retrieve your location';
+//     }
 
-    if (!navigator.geolocation) {
-        status.textContent = 'Geolocation is not supported by your browser';
-    } else {
-        status.textContent = 'Locating…';
-        navigator.geolocation.getCurrentPosition(success, error);
-    }
+//     if (!navigator.geolocation) {
+//         status.textContent = 'Geolocation is not supported by your browser';
+//     } else {
+//         status.textContent = 'Locating…';
+//         navigator.geolocation.getCurrentPosition(success, error);
+//     }
 
-}
+// }
 
 // document.querySelector('#find-me').addEventListener('click', geoFindMe);
 //END OF GEO LOCATION ON CLICK
