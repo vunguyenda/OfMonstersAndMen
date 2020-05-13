@@ -12,6 +12,9 @@
 //endless loop pic in the assets folder is from u/metrolinaszabi on reddit r/astrophotography
 
 $(document).ready(function () {
+    // flag to turn off or on Console.log
+    let test = true;
+
     $('select').formSelect();  
     function showPosition(position) {
         $("#lat").text("Lat: " + position.coords.latitude);
@@ -40,7 +43,7 @@ $(document).ready(function () {
         event.preventDefault();
         var cityLon = 0;
         var cityLat = 0;
-        // TANNER - Added API for Open Weather to get Longitude and Latitude
+        // Added API for Open Weather to get Longitude and Latitude
         cityName = $("#city").val();
         console.log("button was clicked");
         console.log("city selected is: " + cityName);
@@ -187,3 +190,94 @@ function geoFindMe() {
 
 
 //We'll keep both button (current location) and form on html
+  // Collect requested location
+  $('#submitBtn,#past-cities').on('click', function () {
+    // get location from user input box
+    let e = $(event.target)[0];
+    let location = "";
+    if (e.id === "getSatellites") {
+      location = $('#city-search').val().trim().toUpperCase();
+    } 
+      else if ( e.className === ("cityList") ) {
+        location = e.innerText;
+    }
+    if (location == "") return;
+    updateCityStore(location);
+    getCurSatellites(location);
+   });
+  
+  function getCurLocation() {
+    // Set location current location to null
+    let location = {};
+    
+    // if successful Navigator, load location
+    function success(position) {
+      // Get
+      location = {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        success: true
+      }
+      if (test) { console.log(" success location", location); }
+      getCurSatellites(location);
+    }
+
+    // if unsuccessful Navigator function, load error
+    function error() {
+      location = { success: false }
+      console.log('Could not get location');
+      return location;
+    }
+
+    // Use HTML Geolocation to get longitude and latitude
+    if (!navigator.geolocation) {
+      console.log('Geolocation is not supported by your browser');
+    } else {
+      navigator.geolocation.getCurrentPosition(success, error);
+    }
+  };
+
+  function getCurSatellites(loc) {
+    // STUB, reder History should load in GetCurSatellites call
+    renderHistory();
+    // clear search field
+    $('#city-search').val("");
+    if (typeof loc === "object") {
+      city = `lat=${loc.latitude}&lon=${loc.longitude}`;
+    } else {
+      city = `q=${loc}`;
+    }
+  };
+
+  function updateCityStore(city) {
+    // Update local storage with searched City's
+    let cityList = JSON.parse(localStorage.getItem("cityList")) || [];
+    cityList.push(city); 
+    // sort into alphabetical order
+    cityList.sort();
+    // removes dulicate cities
+    for (let i=1; i<cityList.length; i++) {
+       if (cityList[i] === cityList[i-1]) cityList.splice(i,1);
+    }
+    
+    //stores in local storage
+    localStorage.setItem('cityList', JSON.stringify(cityList));
+  };
+
+  function renderHistory() {
+    // function to pull city history from local memory
+    let cityList = JSON.parse(localStorage.getItem("cityList")) || [];
+
+    $('#past-cities').empty();
+    cityList.forEach ( function (city) {
+      let cityNameDiv = $('<div>');
+      cityNameDiv.addClass("cityList");
+      cityNameDiv.attr("value",city);
+      cityNameDiv.text(city);
+      $('#past-cities').append(cityNameDiv);
+    });
+  };
+
+  // will get location when page initializes
+  const location = getCurLocation();
+});
