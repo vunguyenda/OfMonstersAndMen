@@ -19,7 +19,7 @@ var cityLon = 0;
 
 $(document).ready(function () {
     $(".card-sat-info").hide();
-    $('select').formSelect();    
+    $('select').formSelect();
     function showPosition(position) {
         $("#lat").text("Lat: " + position.coords.latitude);
         $("#lon").text("Lon: " + position.coords.longitude);
@@ -50,15 +50,15 @@ $(document).ready(function () {
 
     $("#submitBtn,#past-cities").on("click", function (event) {
         event.preventDefault();
-        
+
         $(".card-sat-info").hide();
-         // get location from user input box or from history list
+        // get location from user input box or from history list
         let e = $(event.target)[0];
         let cityName = "";
         if (e.id === "submitBtn") {
             cityName = $('#city').val().trim().toUpperCase();
-        } 
-        else if ( e.className === ("cityList") ) {
+        }
+        else if (e.className === ("cityList")) {
             cityName = e.innerText;
         }
         if (cityName == "") return;
@@ -74,13 +74,13 @@ $(document).ready(function () {
         // cityName = $("#city").val();
         //TODO tim tanner, make this a prepending list, with a max of 5? 10?
         $("#cityNameSpan").text(cityName);
-        
+
         console.log("button was clicked");
         console.log("city selected is: " + cityName);
         console.log("Selected dropdown is", $("#satellite-category").val());
-        
+
         category = $("#satellite-category").val();
-        
+
         console.log(cityName);
 
         var apiKey = "630e27fa306f06f51bd9ecbb54aae081";
@@ -91,17 +91,17 @@ $(document).ready(function () {
             url: openCurrWeatherAPI,
             method: "GET"
         }).then(function (response1) {
-            
+
             console.log(response1);
             console.log("lat " + response1.coord.lat + "lon " + response1.coord.lon);
-          
-            if (cityLat != 0 || cityLon != 0) {
-                console.log("first if");
-            } else {
+
+            // if (cityLat != 0 || cityLon != 0) {
+            //     console.log("first if");
+            // } else {
                 cityLat = response1.coord.lat;
                 cityLon = response1.coord.lon;
-                console.log("if else");
-            }
+            //     console.log("if else");
+            // }
 
             //End of Open Weather API
             var queryURL =
@@ -116,7 +116,7 @@ $(document).ready(function () {
                 url: queryURL,
                 method: "GET"
             }).then(function (response) {
-                
+
                 console.log("response");
                 console.log(response);
 
@@ -135,16 +135,16 @@ $(document).ready(function () {
                     $(".card-sat-info").show();
                     //this loop populates the list of sats above location
                     for (var i = 0; i < response.above.length; i++) {
-                        console.log("i is " + i + " " + response.above[i].satname + "Satellite ID :"+response.above[i].satid);
+                        console.log("i is " + i + " " + response.above[i].satname + "Satellite ID :" + response.above[i].satid);
                         //$("#sat"+i).text(response.above[i].satname);
                         $("#satList ul").append("<li class='tab satListClass' value = '" + i + "'><a>"
-                           + response.above[i].satname + "</a></li>");
+                            + response.above[i].satname + "</a></li>");
                         try {
                             $('.tabs').tabs();
-                        } catch(e) {}
+                        } catch (e) { }
                     }
 
-                   
+
 
                     // abandoning code below, cant get it to work
 
@@ -174,26 +174,32 @@ $(document).ready(function () {
                     //ONLY what is below is what will change if different Sat is clicked. 
                     $("#satName").text(response.above[0].satname);
                     $("#satID").text(response.above[0].satid);
-
+                    $("#Direction").text("Calculating...");
+                    $("#Elevation").text("Calculating...");
                     //TODO retrieve NORAD sat id, use the other api to display viewing direction and elevation
 
-                    $("#Direction").text("#Direction");
-                    $("#Elevation").text("#Elevation");
+                    var NoradID = response.above[0].satid
+                    elevationAzimuth(NoradID, cityLat, cityLon);
 
-                    $("body").on("click", "#satList ul .satListClass", function () {
+                    $(".satListClass").on("click", function () {
                         var clickedIndex = $(this).attr("value");
                         console.log("sat clicked index of " + clickedIndex);
                         $("#satName").text(response.above[clickedIndex].satname);
                         $("#satID").text(response.above[clickedIndex].satid)
-                        $("#Direction").text("#Direction");
-                        $("#Elevation").text("#Elevation");
+                        $("#Direction").text("Calculating...");
+                        $("#Elevation").text("Calculating...");
+                        var NoradID = response.above[clickedIndex].satid
+                        elevationAzimuth(NoradID, cityLat, cityLon);
                     });
-                    
+
                 }
             });
         });
 
     });
+
+
+
 
     function updateCityStore(city) {
 
@@ -201,49 +207,79 @@ $(document).ready(function () {
 
         // Update local storage with searched City's
         let cityList = JSON.parse(localStorage.getItem("cityList")) || [];
-        cityList.unshift(city); 
+        cityList.unshift(city);
         // // sort into alphabetical order
         // cityList.sort();
         // removes dulicate cities
-        for (let i=1; i < cityList.length; i++) {
-           if (cityList[i] === cityList[i-1]) {
-               cityList.splice(i,1);
-           }
+        for (let i = 1; i < cityList.length; i++) {
+            if (cityList[i] === cityList[i - 1]) {
+                cityList.splice(i, 1);
+            }
         }
         if (cityList.length > 5) {
             cityList.length = 5;
         }
-        
+
         //stores in local storage
         localStorage.setItem('cityList', JSON.stringify(cityList));
-      };
-    
+    };
+
     function renderHistory() {
         // function to pull city history from local memory
         console.log('renderHistory');
 
         let cityList = JSON.parse(localStorage.getItem("cityList")) || [];
-    
+
         $('#past-cities').empty();
-        
-        cityList.forEach ( function (city){
-          let cityNameDiv = $('<div>');
-          cityNameDiv.addClass("cityList");
-          cityNameDiv.attr("value",city);
-          cityNameDiv.text(city);
-          $('#past-cities').append(cityNameDiv);
+
+        cityList.forEach(function (city) {
+            let cityNameDiv = $('<div>');
+            cityNameDiv.addClass("cityList");
+            cityNameDiv.attr("value", city);
+            cityNameDiv.text(city);
+            $('#past-cities').append(cityNameDiv);
         });
-      };
+    };
 
-//this stores the sat category on change to satCat
-$("#satellite-category").on("change", function () {
-    console.log($(this).val());
-    satCat = $(this).val();
-    console.log("satcat is " + satCat);
+    //this stores the sat category on change to satCat
+    $("#satellite-category").on("change", function () {
+        console.log($(this).val());
+        satCat = $(this).val();
+        console.log("satcat is " + satCat);
+    });
+
+
 });
 
+function elevationAzimuth(NoradID, cityLat, cityLon) {
+    var queryURLElevation =
+        "https://www.n2yo.com/rest/v1/satellite/positions/" +
+        NoradID + "/" +
+        cityLat +
+        "/" +
+        cityLon +
+        "/0/1/" +
+        "&apiKey=WWZP6Q-SXMAX7-WBLGBK-4EVN";
+    console.log("queryURLElevation" + queryURLElevation)
+    $.ajax({
+        url: queryURLElevation,
+        method: "GET"
+    }).then(function (elevationAzimuthresponse) {
+        console.log("elevationAzimuthresponse");
+        console.log(elevationAzimuthresponse);
+        var elevationAzimuthObject = {
+            elevation: elevationAzimuthresponse.positions[0].elevation,
+            azimuth: elevationAzimuthresponse.positions[0].azimuth,
+        }
+        console.log("object" + elevationAzimuthObject);
+        console.log("elevation " + elevationAzimuthObject.elevation);
+        console.log("azimuth " + elevationAzimuthObject.azimuth);
+        $("#Direction").text(elevationAzimuthObject.azimuth);
+        $("#Elevation").text(elevationAzimuthObject.elevation);
+    });
+}
 
-});
+
 
 //When I use the website, I can search for satellite passing by my location
 //When I want to search for satellite, I can choose by my current location or 
