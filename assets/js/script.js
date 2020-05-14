@@ -131,7 +131,6 @@ $(document).ready(function () {
                     console.log("satname 0 is " + response.above[0].satname);
                     console.log("for loop starting");
                     //emptying the sat list before populating it
-                    debugger;
                     $("#satList ul").empty();
                     $(".card-sat-info").show();
                     //this loop populates the list of sats above location
@@ -171,8 +170,6 @@ $(document).ready(function () {
                     console.log("conditions" + response1.weather[0].description);
                     $("#Conditions").text(response1.weather[0].description);
                     $("#Category").text(category);
-                    debugger;
-
                     //populating card with the first sat retrieved
                     //ONLY what is below is what will change if different Sat is clicked. 
                     $("#satName").text(response.above[0].satname);
