@@ -19,15 +19,13 @@ var cityLon = 0;
 
 $(document).ready(function () {
     $('select').formSelect();
+    $(".card-sat-info").hide();
+    
     function showPosition(position) {
         $("#lat").text("Lat: " + position.coords.latitude);
         $("#lon").text("Lon: " + position.coords.longitude);
-
         cityLat = position.coords.latitude;
         cityLon = position.coords.longitude;
-
-        console.log("geo location lat is " + cityLat);
-
         var apiKey = "630e27fa306f06f51bd9ecbb54aae081";
         var queryURL = "https://api.openweathermap.org/data/2.5/weather?appid=" + apiKey + "&lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=imperial";
         // Anitha - Added AJAX request to get current city
@@ -37,9 +35,9 @@ $(document).ready(function () {
         }).then(function (response) {
             $("#current-city").text("City : " + response.name);
             $("#city").val(response.name);
+            $('#city').focus();
         });
     }
-
     $("#current-location").on("click", function () {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition);
@@ -48,13 +46,12 @@ $(document).ready(function () {
 
     var cityName = "";
     var category = 0;
-    
     console.log("city selected is: " + cityName);
-
     renderHistory();
 
     $("#submitBtn,#past-cities").on("click", function (event) {
         event.preventDefault();
+        
 
          // get location from user input box or from history list
         let e = $(event.target)[0];
@@ -136,12 +133,17 @@ $(document).ready(function () {
                     console.log("for loop starting");
                     //emptying the sat list before populating it
                     $("#satList ul").empty();
+                    $(".card-sat-info").show();
                     //this loop populates the list of sats above location
                     for (var i = 0; i < response.above.length; i++) {
                         console.log("i is " + i + " " + response.above[i].satname);
-                        $("#satList ul").append("<li class='satListClass' value = '" + i + "'>"
-                            + response.above[i].satname + "</li>");
+                        $("#sat"+i).text(response.above[i].satname);
+                        $("#satList ul").append("<li class='tab satListClass' value = '" + i + "'><a>"
+                           + response.above[i].satname + "</a></li>");
+                        $('.tabs').tabs();
                     }
+
+                   
 
                     // abandoning code below, cant get it to work
 
@@ -170,7 +172,7 @@ $(document).ready(function () {
 
                     //populating card with the first sat retrieved
                     //ONLY what is below is what will change if different Sat is clicked. 
-                    $("#SatName").text(response.above[0].satname);
+                    $("#satName").text(response.above[0].satname);
 
                     //TODO retrieve NORAD sat id, use the other api to display viewing direction and elevation
 
@@ -180,10 +182,11 @@ $(document).ready(function () {
                     $("body").on("click", "#satList ul .satListClass", function () {
                         var clickedIndex = $(this).attr("value");
                         console.log("sat clicked index of " + clickedIndex);
-                        $("#SatName").text(response.above[clickedIndex].satname);
+                        $("#satName").text(response.above[clickedIndex].satname);
                         $("#Direction").text("#Direction");
                         $("#Elevation").text("#Elevation");
                     });
+                    
                 }
             });
         });
@@ -201,7 +204,9 @@ $(document).ready(function () {
         // cityList.sort();
         // removes dulicate cities
         for (let i=1; i < cityList.length; i++) {
-           if (cityList[i] === cityList[i-1]) cityList.splice(i,1);
+           if (cityList[i] === cityList[i-1]) {
+               cityList.splice(i,1);
+           }
         }
         if (cityList.length > 5) {
             cityList.length = 5;
@@ -218,7 +223,7 @@ $(document).ready(function () {
         let cityList = JSON.parse(localStorage.getItem("cityList")) || [];
     
         $('#past-cities').empty();
-        cityList.forEach ( function (city) {
+        cityList.forEach ( function (city) { 
           let cityNameDiv = $('<div>');
           cityNameDiv.addClass("cityList");
           cityNameDiv.attr("value",city);
