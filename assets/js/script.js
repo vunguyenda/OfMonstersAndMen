@@ -19,9 +19,7 @@ var cityLon = 0;
 
 $(document).ready(function () {
     $(".card-sat-info").hide();
-    $('select').formSelect();
-   
-    
+    $('select').formSelect();    
     function showPosition(position) {
         $("#lat").text("Lat: " + position.coords.latitude);
         $("#lon").text("Lon: " + position.coords.longitude);
@@ -53,7 +51,7 @@ $(document).ready(function () {
     $("#submitBtn,#past-cities").on("click", function (event) {
         event.preventDefault();
         
-
+        $(".card-sat-info").hide();
          // get location from user input box or from history list
         let e = $(event.target)[0];
         let cityName = "";
@@ -133,15 +131,18 @@ $(document).ready(function () {
                     console.log("satname 0 is " + response.above[0].satname);
                     console.log("for loop starting");
                     //emptying the sat list before populating it
+                    debugger;
                     $("#satList ul").empty();
                     $(".card-sat-info").show();
                     //this loop populates the list of sats above location
                     for (var i = 0; i < response.above.length; i++) {
                         console.log("i is " + i + " " + response.above[i].satname + "Satellite ID :"+response.above[i].satid);
-                        $("#sat"+i).text(response.above[i].satname);
+                        //$("#sat"+i).text(response.above[i].satname);
                         $("#satList ul").append("<li class='tab satListClass' value = '" + i + "'><a>"
                            + response.above[i].satname + "</a></li>");
-                        $('.tabs').tabs();
+                        try {
+                            $('.tabs').tabs();
+                        } catch(e) {}
                     }
 
                    
@@ -170,7 +171,7 @@ $(document).ready(function () {
                     console.log("conditions" + response1.weather[0].description);
                     $("#Conditions").text(response1.weather[0].description);
                     $("#Category").text(category);
-                
+                    debugger;
 
                     //populating card with the first sat retrieved
                     //ONLY what is below is what will change if different Sat is clicked. 
@@ -227,6 +228,7 @@ $(document).ready(function () {
         let cityList = JSON.parse(localStorage.getItem("cityList")) || [];
     
         $('#past-cities').empty();
+        
         cityList.forEach ( function (city){
           let cityNameDiv = $('<div>');
           cityNameDiv.addClass("cityList");
