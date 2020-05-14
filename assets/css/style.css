@@ -25,10 +25,6 @@
 
 .satListClass{
     cursor: pointer;
-    /*border: 1px solid #9e9e9e;
-    padding-bottom: 10px;
-    margin-bottom: 10px;*/
-    
 }
 .sat-info {
     padding-bottom: 10px;
@@ -51,5 +47,9 @@
   }
   .container {
     margin-top: 5px;
+<<<<<<< HEAD
   }
   
+=======
+  } 
+>>>>>>> 90851d95eb3c9027dec504514cb02ca8cdde24aa
