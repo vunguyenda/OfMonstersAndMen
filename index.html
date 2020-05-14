@@ -55,7 +55,7 @@
           <!-- Anitha: Added form section -->
           <form>
             <div class="input-field">
-              <input id="city" type="text" class="validate">
+              <input id="city" type="text" class="validate" >
               <label for="city">Enter the City</label>
             </div>
             <div class="input-field">
@@ -73,24 +73,15 @@
           </form>
           <!-- //TODO tim tanner, make this a prepending list, with a max of 5? 10? -->
           <div id="past-cities"></div>
-  
-          <!-- dynamically generated list of Sats will display here -->
-
-          <!-- TODO anitha? make this display look pretty and clickable -->
-          <!--<div id="satList">
-            <ul class="collection">
-              <li class="collection-item"></li>
-            </ul>
-          </div>-->
         </div>
         <!-- Anitha: Added card section -->
         
-        <div class="col m9 output-col container" >
+        <div class="col m9 output-col container" >  
           <div class="row">
             <div class="col">
               <div id="satList">
                 <ul class="tabs">
-                  
+                  <!-- dynamically generated list of Sats will display here -->
                 </ul>
               </div> 
             </div>
@@ -103,8 +94,9 @@
                 </div>
                 <div class="card-stacked">
                   <div class="card-content">
-                    <p class ="sat-info">Sat Name: <span id="satName"></span></p>
-                    <P class ="sat-info">Category: <span id="Category"></span></p>
+                    <p class ="sat-info">Satellite Name: <span id="satName"></span></p>
+                    <p class ="sat-info">Satellite ID: <span id="satID"></span></p> 
+                    <P class ="sat-info">Category ID: <span id="Category"></span></p>
                     <p class ="sat-info">City at night?: <span id="nightTime"></span></p>
                     <P class ="sat-info">Viewing Conditions: <span id="Conditions"></span></p>
                     <p class ="sat-info">Direction to look: <span id="Direction"></span></p>

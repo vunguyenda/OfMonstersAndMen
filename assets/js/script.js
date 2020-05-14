@@ -18,8 +18,9 @@ var cityLat = 0;
 var cityLon = 0;
 
 $(document).ready(function () {
-    $('select').formSelect();
     $(".card-sat-info").hide();
+    $('select').formSelect();
+   
     
     function showPosition(position) {
         $("#lat").text("Lat: " + position.coords.latitude);
@@ -136,7 +137,7 @@ $(document).ready(function () {
                     $(".card-sat-info").show();
                     //this loop populates the list of sats above location
                     for (var i = 0; i < response.above.length; i++) {
-                        console.log("i is " + i + " " + response.above[i].satname);
+                        console.log("i is " + i + " " + response.above[i].satname + "Satellite ID :"+response.above[i].satid);
                         $("#sat"+i).text(response.above[i].satname);
                         $("#satList ul").append("<li class='tab satListClass' value = '" + i + "'><a>"
                            + response.above[i].satname + "</a></li>");
@@ -169,10 +170,12 @@ $(document).ready(function () {
                     console.log("conditions" + response1.weather[0].description);
                     $("#Conditions").text(response1.weather[0].description);
                     $("#Category").text(category);
+                
 
                     //populating card with the first sat retrieved
                     //ONLY what is below is what will change if different Sat is clicked. 
                     $("#satName").text(response.above[0].satname);
+                    $("#satID").text(response.above[0].satid);
 
                     //TODO retrieve NORAD sat id, use the other api to display viewing direction and elevation
 
@@ -183,6 +186,7 @@ $(document).ready(function () {
                         var clickedIndex = $(this).attr("value");
                         console.log("sat clicked index of " + clickedIndex);
                         $("#satName").text(response.above[clickedIndex].satname);
+                        $("#satID").text(response.above[clickedIndex].satid)
                         $("#Direction").text("#Direction");
                         $("#Elevation").text("#Elevation");
                     });
@@ -223,7 +227,7 @@ $(document).ready(function () {
         let cityList = JSON.parse(localStorage.getItem("cityList")) || [];
     
         $('#past-cities').empty();
-        cityList.forEach ( function (city) { 
+        cityList.forEach ( function (city){
           let cityNameDiv = $('<div>');
           cityNameDiv.addClass("cityList");
           cityNameDiv.attr("value",city);
