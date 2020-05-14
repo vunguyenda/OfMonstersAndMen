@@ -10,7 +10,6 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="./assets/css/style.css">
 </head>
-
 <body>
   <!-- Anitha: Added Nav Bar -->
   <nav>
@@ -57,7 +56,7 @@
           <form>
             <div class="input-field">
               <input id="city" type="text" class="validate">
-              <label for="city">City</label>
+              <label for="city">Enter the City</label>
             </div>
             <div class="input-field">
               <select id="satellite-category">
@@ -73,30 +72,38 @@
             </button>
           </form>
           <!-- //TODO tim tanner, make this a prepending list, with a max of 5? 10? -->
-          <div class="searchHistory">
-            <p>City Name: <span id="cityNameSpan"></span></p>
-          </div>
+          <div id="past-cities"></div>
+  
           <!-- dynamically generated list of Sats will display here -->
 
           <!-- TODO anitha? make this display look pretty and clickable -->
-          <div id="satList">
-            <ul>
+          <!--<div id="satList">
+            <ul class="collection">
               <li class="collection-item"></li>
             </ul>
-          </div>
+          </div>-->
         </div>
         <!-- Anitha: Added card section -->
-
-        <div class="col m9 output-col container">
+        
+        <div class="col m9 output-col container" >
+          <div class="row">
+            <div class="col">
+              <div id="satList">
+                <ul class="tabs">
+                  
+                </ul>
+              </div> 
+            </div>
+          </div>
           <div class="row">
             <div class="col s12">
-              <div class="card horizontal">
+              <div class="card horizontal card-sat-info">
                 <div class="card-image">
                   <img src="./assets/images/Satellite1.jpg">
                 </div>
                 <div class="card-stacked">
                   <div class="card-content">
-                    <p class ="sat-info">Sat Name: <span id="SatName"></span></p>
+                    <p class ="sat-info">Sat Name: <span id="satName"></span></p>
                     <P class ="sat-info">Category: <span id="Category"></span></p>
                     <p class ="sat-info">City at night?: <span id="nightTime"></span></p>
                     <P class ="sat-info">Viewing Conditions: <span id="Conditions"></span></p>
@@ -110,6 +117,7 @@
             </div>
           </div>
         </div>
+        
   </main>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>

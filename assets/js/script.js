@@ -17,18 +17,15 @@
 var cityLat = 0;
 var cityLon = 0;
 
-
 $(document).ready(function () {
     $('select').formSelect();
+    $(".card-sat-info").hide();
+    
     function showPosition(position) {
         $("#lat").text("Lat: " + position.coords.latitude);
         $("#lon").text("Lon: " + position.coords.longitude);
-
         cityLat = position.coords.latitude;
         cityLon = position.coords.longitude;
-
-        console.log("geo location lat is " + cityLat);
-
         var apiKey = "630e27fa306f06f51bd9ecbb54aae081";
         var queryURL = "https://api.openweathermap.org/data/2.5/weather?appid=" + apiKey + "&lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&units=imperial";
         // Anitha - Added AJAX request to get current city
@@ -38,9 +35,9 @@ $(document).ready(function () {
         }).then(function (response) {
             $("#current-city").text("City : " + response.name);
             $("#city").val(response.name);
+            $('#city').focus();
         });
     }
-
     $("#current-location").on("click", function () {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(showPosition);
@@ -50,24 +47,43 @@ $(document).ready(function () {
     var cityName = "";
     var category = 0;
     console.log("city selected is: " + cityName);
-    $("#submitBtn").on("click", function (event) {
+    renderHistory();
+
+    $("#submitBtn,#past-cities").on("click", function (event) {
         event.preventDefault();
+        
+
+         // get location from user input box or from history list
+        let e = $(event.target)[0];
+        let cityName = "";
+        if (e.id === "submitBtn") {
+            cityName = $('#city').val().trim().toUpperCase();
+        } 
+        else if ( e.className === ("cityList") ) {
+            cityName = e.innerText;
+        }
+        if (cityName == "") return;
+
+        updateCityStore(cityName);
+        renderHistory();
 
         //this empties the sat list and says calculating while waiting for API to repond
         $("#satList ul").empty();
         $("#satList ul").append("<li>Calculating...</li>");
 
         // TANNER - Added API for Open Weather to get Longitude and Latitude
-        cityName = $("#city").val();
+        // cityName = $("#city").val();
         //TODO tim tanner, make this a prepending list, with a max of 5? 10?
         $("#cityNameSpan").text(cityName);
-
+        
         console.log("button was clicked");
         console.log("city selected is: " + cityName);
         console.log("Selected dropdown is", $("#satellite-category").val());
+        
         category = $("#satellite-category").val();
-
+        
         console.log(cityName);
+
         var apiKey = "630e27fa306f06f51bd9ecbb54aae081";
         var currentURL = "https://api.openweathermap.org/data/2.5/weather?q=";
         var apiIdURL = "&appid=";
@@ -76,9 +92,10 @@ $(document).ready(function () {
             url: openCurrWeatherAPI,
             method: "GET"
         }).then(function (response1) {
+            
             console.log(response1);
             console.log("lat " + response1.coord.lat + "lon " + response1.coord.lon);
-
+          
             if (cityLat != 0 || cityLon != 0) {
                 console.log("first if");
             } else {
@@ -100,8 +117,10 @@ $(document).ready(function () {
                 url: queryURL,
                 method: "GET"
             }).then(function (response) {
+                
                 console.log("response");
                 console.log(response);
+
                 //Currently untested, idea being that if response above is empty, error is displayed
                 if (!response.above) {
                     console.log("no sats found");
@@ -114,12 +133,17 @@ $(document).ready(function () {
                     console.log("for loop starting");
                     //emptying the sat list before populating it
                     $("#satList ul").empty();
+                    $(".card-sat-info").show();
                     //this loop populates the list of sats above location
                     for (var i = 0; i < response.above.length; i++) {
                         console.log("i is " + i + " " + response.above[i].satname);
-                        $("#satList ul").append("<li class='satListClass' value = '" + i + "'>"
-                            + response.above[i].satname + "</li>");
+                        $("#sat"+i).text(response.above[i].satname);
+                        $("#satList ul").append("<li class='tab satListClass' value = '" + i + "'><a>"
+                           + response.above[i].satname + "</a></li>");
+                        $('.tabs').tabs();
                     }
+
+                   
 
                     // abandoning code below, cant get it to work
 
@@ -148,7 +172,7 @@ $(document).ready(function () {
 
                     //populating card with the first sat retrieved
                     //ONLY what is below is what will change if different Sat is clicked. 
-                    $("#SatName").text(response.above[0].satname);
+                    $("#satName").text(response.above[0].satname);
 
                     //TODO retrieve NORAD sat id, use the other api to display viewing direction and elevation
 
@@ -158,16 +182,55 @@ $(document).ready(function () {
                     $("body").on("click", "#satList ul .satListClass", function () {
                         var clickedIndex = $(this).attr("value");
                         console.log("sat clicked index of " + clickedIndex);
-                        $("#SatName").text(response.above[clickedIndex].satname);
+                        $("#satName").text(response.above[clickedIndex].satname);
                         $("#Direction").text("#Direction");
                         $("#Elevation").text("#Elevation");
                     });
+                    
                 }
             });
         });
 
     });
-});
+
+    function updateCityStore(city) {
+
+        console.log('updateCityStore');
+
+        // Update local storage with searched City's
+        let cityList = JSON.parse(localStorage.getItem("cityList")) || [];
+        cityList.unshift(city); 
+        // // sort into alphabetical order
+        // cityList.sort();
+        // removes dulicate cities
+        for (let i=1; i < cityList.length; i++) {
+           if (cityList[i] === cityList[i-1]) {
+               cityList.splice(i,1);
+           }
+        }
+        if (cityList.length > 5) {
+            cityList.length = 5;
+        }
+        
+        //stores in local storage
+        localStorage.setItem('cityList', JSON.stringify(cityList));
+      };
+    
+    function renderHistory() {
+        // function to pull city history from local memory
+        console.log('renderHistory');
+
+        let cityList = JSON.parse(localStorage.getItem("cityList")) || [];
+    
+        $('#past-cities').empty();
+        cityList.forEach ( function (city) { 
+          let cityNameDiv = $('<div>');
+          cityNameDiv.addClass("cityList");
+          cityNameDiv.attr("value",city);
+          cityNameDiv.text(city);
+          $('#past-cities').append(cityNameDiv);
+        });
+      };
 
 //this stores the sat category on change to satCat
 $("#satellite-category").on("change", function () {
@@ -177,6 +240,7 @@ $("#satellite-category").on("change", function () {
 });
 
 
+});
 
 //When I use the website, I can search for satellite passing by my location
 //When I want to search for satellite, I can choose by my current location or 
