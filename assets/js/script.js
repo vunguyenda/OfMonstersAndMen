@@ -18,6 +18,7 @@ var cityLat = 0;
 var cityLon = 0;
 
 $(document).ready(function () {
+    $("#error-message").hide();
     $(".card-sat-info").hide();
     $('select').formSelect();    
     function showPosition(position) {
@@ -52,6 +53,7 @@ $(document).ready(function () {
         event.preventDefault();
         
         $(".card-sat-info").hide();
+        
          // get location from user input box or from history list
         let e = $(event.target)[0];
         let cityName = "";
@@ -61,7 +63,11 @@ $(document).ready(function () {
         else if ( e.className === ("cityList") ) {
             cityName = e.innerText;
         }
-        if (cityName == "") return;
+        if (cityName == "") {
+            $("#error-message").show();
+            return;
+        }
+        $("#error-message").hide();
 
         updateCityStore(cityName);
         renderHistory();
@@ -137,7 +143,7 @@ $(document).ready(function () {
                     for (var i = 0; i < response.above.length; i++) {
                         console.log("i is " + i + " " + response.above[i].satname + "Satellite ID :"+response.above[i].satid);
                         //$("#sat"+i).text(response.above[i].satname);
-                        $("#satList ul").append("<li class='tab satListClass' value = '" + i + "'><a>"
+                        $("#satList ul").append("<li class='tab satListClass s12' value = '" + i + "'><a>"
                            + response.above[i].satname + "</a></li>");
                         try {
                             $('.tabs').tabs();
