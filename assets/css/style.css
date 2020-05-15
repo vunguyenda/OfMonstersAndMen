@@ -1,6 +1,5 @@
 .main {
-    padding: 10px;
-    
+    padding: 10px;    
 }
 .nav-wrapper {
   background-color: #26a69a;
@@ -10,18 +9,16 @@
    width: 100%;
    max-width: 100%;
    font-size: 16px;
-   font-weight: 400; 
+   font-weight: 500; 
    font-family:"Helvetica Neue","sans-serif";
 }
-.satellite-info .row .form-col {
-   
+.satellite-info .row .form-col {  
     padding-top: 3px;
     padding-bottom: 10px;
 }
 .mb-0 {
     margin-bottom: 0;
 }
-
 .satListClass{
     cursor: pointer;
 }
@@ -31,11 +28,11 @@
 }
 .search-section {
     height: 100%;
-  }
-  #past-cities {
+}
+#past-cities {
     margin-top: 10px;
-  }
-  .cityList {
+}
+.cityList {
     border:slategray solid;
     border-width: thin;
     height: 40px;
@@ -44,20 +41,24 @@
     cursor: pointer;
     font-family:"Helvetica Neue","sans-serif";
     font-weight: 400;
-  }
-  .cityList:hover {
+}
+.cityList:hover {
     background-color: #26a69a;;
     color: #fff;
-  }
-  .container {
-    margin-top: 5px;
-    
-  }
-  #error-message {
+}
+.container {
+    margin-top: 5px;  
+}
+#error-message {
     color: red;
     margin-bottom: 30px;
     border: 1px solid red;
     background-color: #ffe6e6;
     border-radius: 5px;
     padding: 5px;
-  }
+}
+#Description {
+  font-family:"Helvetica Neue","sans-serif";
+  line-height: 2rem;
+}
+  
