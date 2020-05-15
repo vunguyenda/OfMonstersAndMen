@@ -10,7 +10,6 @@
 // https://images-assets.nasa.gov/image/iss023e030445/iss023e030445~orig.jpg
 
 //endless loop pic in the assets folder is from u/metrolinaszabi on reddit r/astrophotography
-
 // response1 is the openweather response
 // response is the n2y0 ABOUT response
 
@@ -54,8 +53,8 @@ $(document).ready(function () {
     $("#submitBtn,#past-cities").on("click", function (event) {
         event.preventDefault();
         $("#offset").removeClass("offset-s4 s4 testcls");
-        $('#offset').addClass("s12 m3");    
-         // get location from user input box or from history list
+        $('#offset').addClass("s12 m3");
+        // get location from user input box or from history list
         let e = $(event.target)[0];
         let cityName = "";
         if (e.id === "submitBtn") {
@@ -107,8 +106,8 @@ $(document).ready(function () {
             $("#lon").text("Longitude: " + cityLon);
             // if (cityLat != 0 || cityLon != 0) {
 
-                cityLat = response1.coord.lat;
-                cityLon = response1.coord.lon;
+            cityLat = response1.coord.lat;
+            cityLon = response1.coord.lon;
 
             //End of Open Weather API
             var queryURL =
@@ -124,19 +123,24 @@ $(document).ready(function () {
                 method: "GET"
             }).then(function (response) {
 
-                console.log("response");
-                console.log(response);
+                // console.log("response");
+                // console.log(response);
 
                 //Currently untested, idea being that if response above is empty, error is displayed
                 if (!response.above) {
                     console.log("no sats found");
                     $("#satList ul li").text("No sats found");
+                    $("#satName").text("No sats found");
+                    $("#satID").text("No sats found");
+                    $("#Direction").text("No sats found");
+                    $("#Elevation").text("No sats found");
+                    $("#Description").text("Description not found");
+                    $("#link").attr("href", "#");
                 } else {
-                    console.log("response.above");
-
+                    // console.log("response.above");
                     console.log(response.above);
-                    console.log("satname 0 is " + response.above[0].satname);
-                    console.log("for loop starting");
+                    // console.log("satname 0 is " + response.above[0].satname);
+                    // console.log("for loop starting");
                     //emptying the sat list before populating it
                     $("#satList ul").empty();
                     $(".card-sat-info").show();
@@ -157,10 +161,10 @@ $(document).ready(function () {
                     console.log("sunrise" + response1.sys.sunrise);
                     //TODO code that calcs if the current city in any part of the world is at night time
                     // https://openweathermap.org/current
-                    $("#nightTime").text("#nightTime");
-                    console.log("conditions" + response1.weather[0].description);
+                    // $("#nightTime").text("#nightTime");
+                    // console.log("conditions" + response1.weather[0].description);
                     $("#Conditions").text(response1.weather[0].description);
-                    $("#Category").text(category);
+                    // $("#Category").text(category);
                     //populating card with the first sat retrieved
                     //ONLY what is below is what will change if different Sat is clicked. 
                     $("#satName").text(response.above[0].satname);
@@ -171,6 +175,7 @@ $(document).ready(function () {
 
                     var NoradID = response.above[0].satid
                     elevationAzimuth(NoradID, cityLat, cityLon);
+                    displayWikiApi(NoradID);
 
                     $(".satListClass").on("click", function () {
                         var clickedIndex = $(this).attr("value");
@@ -181,6 +186,7 @@ $(document).ready(function () {
                         $("#Elevation").text("Calculating...");
                         var NoradID = response.above[clickedIndex].satid
                         elevationAzimuth(NoradID, cityLat, cityLon);
+                        displayWikiApi(NoradID);
                     });
 
                 }
@@ -258,12 +264,68 @@ function elevationAzimuth(NoradID, cityLat, cityLon) {
             elevation: elevationAzimuthresponse.positions[0].elevation,
             azimuth: elevationAzimuthresponse.positions[0].azimuth,
         }
-        console.log("object" + elevationAzimuthObject);
-        console.log("elevation " + elevationAzimuthObject.elevation);
-        console.log("azimuth " + elevationAzimuthObject.azimuth);
-        $("#Direction").text(elevationAzimuthObject.azimuth);
-        $("#Elevation").text(elevationAzimuthObject.elevation);
+        var azi = elevationAzimuthresponse.positions[0].azimuth;
+        var AzimuthString = "";
+        if (azi > 11.25 && azi <= 33.75) AzimuthString = "NNE";
+        if (azi > 33.75 && azi <= 56.25) AzimuthString = "NE";
+        if (azi > 56.25 && azi <= 78.75) AzimuthString = "ENE";
+        if (azi > 78.75 && azi <= 101.25) AzimuthString = "East";
+        if (azi > 101.25 && azi <= 123.75) AzimuthString = "ESE";
+        if (azi > 123.75 && azi <= 146.25) AzimuthString = "SE";
+        if (azi > 146.25 && azi <= 168.75) AzimuthString = "SSE";
+        if (azi > 168.75 && azi <= 191.25) AzimuthString = "South";
+        if (azi > 191.25 && azi <= 213.75) AzimuthString = "SSW";
+        if (azi > 213.75 && azi <= 236.25) AzimuthString = "SW";
+        if (azi > 236.25 && azi <= 258.75) AzimuthString = "WSW";
+        if (azi > 258.75 && azi <= 281.25) AzimuthString = "West";
+        if (azi > 281.25 && azi <= 303.75) AzimuthString = "WNW";
+        if (azi > 303.75 && azi <= 326.25) AzimuthString = "NW";
+        if (azi > 326.25 && azi <= 348.75) AzimuthString = "NNW";
+        if ((azi > 348.75 && azi < 360) || (azi >= 0 && azi <= 11.25)) AzimuthString = "North";
+        // console.log("elevation " + elevationAzimuthObject.elevation);
+        // console.log("azimuth " + elevationAzimuthObject.azimuth);
+        if (elevationAzimuthresponse.positions[0].sataltitude == 0) {
+            $("#Direction").html("<br><p>Satellite is no longer in orbit</p>");
+            $("#Elevation").html("<br><p>Satellite is no longer in orbit</p>");
+        } else {
+            $("#Direction").text(AzimuthString);
+            $("#Elevation").text(elevationAzimuthObject.elevation);
+        }
     });
+}
+
+function displayWikiApi(NoradID) {
+
+    var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "https://uphere-space1.p.rapidapi.com/satellite/" + NoradID + "/details",
+        "method": "GET",
+        "headers": {
+            "x-rapidapi-host": "uphere-space1.p.rapidapi.com",
+            "x-rapidapi-key": "a0699af2e5msh7e3ac5ef7aa5c7cp155d14jsn98f16870b41d"
+        }
+    }
+
+    $.ajax(settings).then(function (response) {
+        console.log(response);
+        console.log("response.description");
+        console.log(response.description);
+        console.log("response.links[0].link_name + response.links[0].link_url");
+        $("#Description").text(response.description);
+        if (!response.links[0]) {
+            //do nothing if links is empty
+        } else {
+            console.log(response.links[0].link_name);
+            console.log(response.links[0].link_url);
+            $("#link").text(response.links[0].link_name);
+            $("#link").attr("href", response.links[0].link_url);
+        }
+
+    });
+
+
+
 }
 
 
