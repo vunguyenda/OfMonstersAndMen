@@ -103,8 +103,8 @@ $(document).ready(function () {
             $("#current-city").text("City : " + cityName);
             $("#city").val(cityName);
             $('#city').focus();
-            $("#lat").text("Lat: " + cityLat);
-            $("#lon").text("Lon: " + cityLon);
+            $("#lat").text("Latitude: " + cityLat);
+            $("#lon").text("Longitude: " + cityLon);
             // if (cityLat != 0 || cityLon != 0) {
 
                 cityLat = response1.coord.lat;
