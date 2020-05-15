@@ -18,6 +18,7 @@ var cityLat = 0;
 var cityLon = 0;
 
 $(document).ready(function () {
+    $("#error-message").hide();
     $(".card-sat-info").hide();
     $('select').formSelect();
     function showPosition(position) {
@@ -52,7 +53,7 @@ $(document).ready(function () {
         event.preventDefault();
 
         $(".card-sat-info").hide();
-        // get location from user input box or from history list
+         // get location from user input box or from history list
         let e = $(event.target)[0];
         let cityName = "";
         if (e.id === "submitBtn") {
@@ -61,7 +62,11 @@ $(document).ready(function () {
         else if (e.className === ("cityList")) {
             cityName = e.innerText;
         }
-        if (cityName == "") return;
+        if (cityName == "") {
+            $("#error-message").show();
+            return;
+        }
+        $("#error-message").hide();
 
         updateCityStore(cityName);
         renderHistory();
