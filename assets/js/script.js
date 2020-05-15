@@ -22,8 +22,8 @@ $(document).ready(function () {
     $(".card-sat-info").hide();
     $('select').formSelect();    
     function showPosition(position) {
-        $("#lat").text("Lat: " + position.coords.latitude);
-        $("#lon").text("Lon: " + position.coords.longitude);
+        $("#lat").text("Latitude: " + position.coords.latitude);
+        $("#lon").text("Longitude: " + position.coords.longitude);
         cityLat = position.coords.latitude;
         cityLon = position.coords.longitude;
         var apiKey = "630e27fa306f06f51bd9ecbb54aae081";
@@ -51,9 +51,8 @@ $(document).ready(function () {
 
     $("#submitBtn,#past-cities").on("click", function (event) {
         event.preventDefault();
-        
-        $(".card-sat-info").hide();
-        
+        $("#offset").removeClass("offset-s4 s4 testcls");
+        $('#offset').addClass("s12 m3");    
          // get location from user input box or from history list
         let e = $(event.target)[0];
         let cityName = "";
@@ -198,7 +197,6 @@ $(document).ready(function () {
                 }
             });
         });
-
     });
 
     function updateCityStore(city) {
