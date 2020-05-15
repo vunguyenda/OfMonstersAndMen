@@ -18,7 +18,6 @@
     padding-top: 3px;
     padding-bottom: 10px;
 }
-
 .mb-0 {
     margin-bottom: 0;
 }
@@ -52,6 +51,7 @@
   }
   .container {
     margin-top: 5px;
+    
   }
   #error-message {
     color: red;
