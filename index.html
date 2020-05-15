@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <link rel="stylesheet" href="./assets/css/style.css">
 </head>
+
 <body>
   <!-- Anitha: Added Nav Bar -->
   <nav>
@@ -20,7 +21,7 @@
   <!-- Anitha: Added application main section -->
   <main class="main">
     <!-- Anitha: Added section to display current location and city -->
-    <section class="container container-size" >
+    <section class="container container-size">
       <div class="row">
         <div class="col s12 m3">
           <button class="waves-effect waves-light btn-large" id="current-location">
@@ -55,7 +56,7 @@
           <!-- Anitha: Added form section -->
           <form>
             <div class="input-field">
-              <input id="city" type="text" class="validate" >
+              <input id="city" type="text" class="validate">
               <label for="city">Enter the City</label>
             </div>
             <p id="error-message">Please enter city name</p>
@@ -63,6 +64,11 @@
               <select id="satellite-category">
                 <option value="1" selected>Brightest</option>
                 <option value="2">ISS</option>
+                <option value="52">Starlink</option>
+                <option value="15">Iridium</option>
+                <option value="17">Globalstar</option>
+                <option value="26">Space & Earth Science</option>
+
               </select>
               <label for="satellite-category">Satellite Category</label>
             </div>
@@ -75,15 +81,15 @@
           <div id="past-cities"></div>
         </div>
         <!-- Anitha: Added card section -->
-        
-        <div class="col m9 output-col container satellite-tabs" >  
+
+        <div class="col m9 output-col container satellite-tabs">
           <div class="row">
             <div class="col s12">
               <div id="satList">
                 <ul class="tabs">
                   <!-- dynamically generated list of Sats will display here -->
                 </ul>
-              </div> 
+              </div>
             </div>
           </div>
           <div class="row">
@@ -94,22 +100,26 @@
                 </div>
                 <div class="card-stacked">
                   <div class="card-content">
-                    <p class ="sat-info">Satellite Name: <span id="satName"></span></p>
-                    <p class ="sat-info">Satellite ID: <span id="satID"></span></p> 
-                    <P class ="sat-info">Category ID: <span id="Category"></span></p>
-                    <p class ="sat-info">City at night?: <span id="nightTime"></span></p>
-                    <P class ="sat-info">Viewing Conditions: <span id="Conditions"></span></p>
-                    <p class ="sat-info">Direction to look: <span id="Direction"></span></p>
-                    <p class ="sat-info">Elevation above horizon: <span id="Elevation"></span></p>
+                    <p class="sat-info">Satellite Name: <span id="satName"></span></p>
+                    <p class="sat-info">Satellite ID: <span id="satID"></span></p>
+                    <!-- <P class ="sat-info">Category ID: <span id="Category"></span></p> -->
+                    <!-- <p class ="sat-info">City at night?: <span id="nightTime"></span></p> -->
+                    <P class="sat-info">Viewing Conditions: <span id="Conditions"></span></p>
+                    <p class="sat-info">Direction to look: <span id="Direction"></span></p>
+                    <p class="sat-info">Elevation above horizon: <span id="Elevation"></span></p>
                   </div>
                   <div class="card-action">
-                    <a href="#">This is a link</a>
+                    <a id="link" href="#">Link not found</a>
                   </div>
+                </div>                
+                </div>
+              </div>
+              <div class="col s12">
+                <p id="Description">Description not found</p>
               </div>
             </div>
           </div>
-        </div>
-        
+
   </main>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
