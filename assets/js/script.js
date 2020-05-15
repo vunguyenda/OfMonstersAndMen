@@ -16,6 +16,7 @@
 
 var cityLat = 0;
 var cityLon = 0;
+var cityName = "";
 
 $(document).ready(function () {
     $("#error-message").hide();
@@ -36,6 +37,7 @@ $(document).ready(function () {
             $("#current-city").text("City : " + response.name);
             $("#city").val(response.name);
             $('#city').focus();
+            cityName = response.name;
         });
     }
     $("#current-location").on("click", function () {
@@ -75,8 +77,6 @@ $(document).ready(function () {
         $("#satList ul").empty();
         $("#satList ul").append("<li>Calculating...</li>");
 
-        // TANNER - Added API for Open Weather to get Longitude and Latitude
-        // cityName = $("#city").val();
         //TODO tim tanner, make this a prepending list, with a max of 5? 10?
         $("#cityNameSpan").text(cityName);
 
@@ -99,14 +99,16 @@ $(document).ready(function () {
 
             console.log(response1);
             console.log("lat " + response1.coord.lat + "lon " + response1.coord.lon);
-
+            //Parse City Name into top header
+            $("#current-city").text("City : " + cityName);
+            $("#city").val(cityName);
+            $('#city').focus();
+            $("#lat").text("Lat: " + cityLat);
+            $("#lon").text("Lon: " + cityLon);
             // if (cityLat != 0 || cityLon != 0) {
-            //     console.log("first if");
-            // } else {
+
                 cityLat = response1.coord.lat;
                 cityLon = response1.coord.lon;
-            //     console.log("if else");
-            // }
 
             //End of Open Weather API
             var queryURL =
@@ -149,22 +151,6 @@ $(document).ready(function () {
                         } catch (e) { }
                     }
 
-
-
-                    // abandoning code below, cant get it to work
-
-                    // //this might work? currently only displays 1 sat when it should be more
-                    // //trying to populate list with sat names
-                    // // $( "ul li" ).text(function( index ) {
-                    // //     return "item number " + ( index + 1 );
-                    // //   });
-                    // //above code is the example from https://api.jquery.com/text/#text-function
-                    // $("#satList ul li").empty();
-                    // $("#satList ul li").text(function (index) {
-                    //     return "Sat" + (index + 1) + ": " + response.above[index].satname;
-                    // });
-                    //----------
-
                     //Populating data that will not change regardless of sat clicked
                     //TODO add weather viewing conditions 
                     console.log("sunset" + response1.sys.sunset);
@@ -202,9 +188,6 @@ $(document).ready(function () {
         });
 
     });
-
-
-
 
     function updateCityStore(city) {
 
@@ -298,93 +281,3 @@ function elevationAzimuth(NoradID, cityLat, cityLon) {
 //When I do a search, it will save my search history into a table on the right side
 //of the search menu
 
-
-//Declaration of global variables
-
-
-
-//Function to pull a location from my 
-
-
-//API to pick a city THEN pull long and lat info
-//Category filter
-
-//Search button
-
-
-
-//Display list of satellites
-
-
-//Display of image
-
-
-//Display of satellite info
-
-
-///Display of search history
-
-//Function to find my current longtitude and latitude
-//copy pasted from mozzilla geolocation API
-//GET GEO LOCATION ON CLICK
-// function geoFindMe() {
-
-//     const status = document.querySelector('#status');
-//     const mapLink = document.querySelector('#map-link');
-
-//     mapLink.href = '';
-//     mapLink.textContent = '';
-
-//     function success(position) {
-//         const latitude = position.coords.latitude;
-//         const longitude = position.coords.longitude;
-//         console.log("geolocator latitude is " + position.coords.latitude);
-
-//         status.textContent = '';
-//         mapLink.href = `https://www.openstreetmap.org/#map=18/${latitude}/${longitude}`;
-//         mapLink.textContent = `Latitude: ${latitude} °, Longitude: ${longitude} °`;
-//     }
-
-//     function error() {
-//         status.textContent = 'Unable to retrieve your location';
-//     }
-
-//     if (!navigator.geolocation) {
-//         status.textContent = 'Geolocation is not supported by your browser';
-//     } else {
-//         status.textContent = 'Locating…';
-//         navigator.geolocation.getCurrentPosition(success, error);
-//     }
-
-// }
-
-// document.querySelector('#find-me').addEventListener('click', geoFindMe);
-//END OF GEO LOCATION ON CLICK
-
-//Raw notes from last meeting
-//Drop menu to choose: current Geo location OR search by cities
-//if choose current 
-
-//Line 21 after above/is lat and long
-//Need a button to display results when searched by current lat/long
-
-//Need an input form in html to accept lat and long by cities
-//when click searched by cities, display results
-//Need an api to parse lat and long into chosen city
-//add openweather api to seach for city long and lat
-
-//when I input name into the search form, and hit seach
-//Then the form will search the query via openweather api
-//then it will return the long/lat info
-//then it will parse the long/lat into javascript
-//then it will display list of Satellite
-
-//In search form: define category (drop down menu)
-//ISS id=2, 1 , 15 , 52
-
-
-
-//In search form: define angle
-
-
-//We'll keep both button (current location) and form on html
