@@ -168,11 +168,9 @@ $(document).ready(function () {
         // Update local storage with searched City's
         let cityList = JSON.parse(localStorage.getItem("cityList")) || [];
         cityList.unshift(city);
-        // // sort into alphabetical order
-        // cityList.sort();
         // removes dulicate cities
         for (let i = 1; i < cityList.length; i++) {
-            if (cityList[i] === cityList[i - 1]) {
+            if (cityList[i] === cityList[0]) {
                 cityList.splice(i, 1);
             }
         }
